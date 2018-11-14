@@ -9,34 +9,11 @@ let app = express();
 const YouTube2 = require('simple-youtube-api');
 const youtube = new YouTube2('AIzaSyBXPHBDbxvRVBWtc_9AkDHiRtAk0q2ms_o');
 const ytdl = require('ytdl-core');
-/*-----------------------------------------------------------------------*/
-/*Create connections to mongodb Databases*/
-/*let mongoose = require('mongoose');
-
-let db = mongoose.createConnection(config.database,{ useNewUrlParser: true });
-let db2 = mongoose.createConnection(config.database2,{ useNewUrlParser: true });
-
-db.on('error', function(err){
-    if(err) throw err;
-});
-
-db.once('open', function callback () {
-    console.info('Connected to userstory db successfully');
-});
-
-db2.on('error', function(err){
-    if(err) throw err;
-});
-
-db2.once('open', function callback () {
-    console.info('Connected to testdb db successfully');
-});
-
-module.exports = db2,db;
-
-mongoose.set('useCreateIndex', true);*/
-/*-----------------------------------------------------------------------*/
-
+let io_client = require('socket.io-client');
+/*let socket = io_client.connect('https://agrevid.com:3001',{secure: true, reconnect: true, rejectUnauthorized : false});
+socket.on('connect',()=>{
+    console.log("connected to https://agrevid.com:3001");
+});*/
 
 // certificat SSL
 let options = {
@@ -47,15 +24,10 @@ let options = {
 };
 
 
-
 /*let serverHttp = http.createServer(app);*/
 let serverHttps = https.createServer(options, app);
 
-let io = require('socket.io')(serverHttps);
-
-
-
-
+let io = new require('socket.io')(serverHttps);
 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
@@ -65,19 +37,18 @@ app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
 
 
-let api = require('./app/routes/api')(app,express,io);
-let apiVideo = require('./app/routes/apiVideo')(app,express,io);
+
+let pilote = require('./app/pilote')(app,express);
 
 /* /api is the root of our api, means that if we want to access the signup api
 * we should type localhost:3000/api/signup */
-app.use('/api', api);
-app.use('/apiVideo', apiVideo);
+
+app.use('/pilote',pilote);
 
 //the parent file of the view pages (Angular routing)
 app.get('/',function(req,res){
    res.sendFile(__dirname + '/public/app/views/index.html');
 });
-
 
 
 serverHttps.listen(config.port,function(err){
@@ -88,5 +59,5 @@ serverHttps.listen(config.port,function(err){
    }
 });
 
-/*
-serverHttp.listen(3000);*/
+
+

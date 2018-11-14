@@ -4,41 +4,49 @@ angular.module('userService',[])
     let userFactory = {};
 
     userFactory.create = function(userData){
-        return $http.post('/api/signup',userData);
+        return $http.post('/pilote/signup',userData);
     }
 
 
 
     userFactory.all = function(){
-        return $http.get('/api/users');
+        return $http.get('/pilote/users');
     }
 
     userFactory.user = function(userData){
-        return $http.post('/api/user',userData);
+        return $http.post('/pilote/user',userData);
+    }
+
+    userFactory.getUser = function(userData){
+        return $http.post('/pilote/user',userData);
     }
 
     userFactory.getHistorySearch = function () {
-        return $http.get('/api/userhistorys');
+        return $http.get('/pilote/userhistorys');
     }
 
     userFactory.getHistorySearchParam = function (userData) {
-        return $http.post('/api/userhistorysParam',userData);
+        return $http.post('/pilote/userhistorysParam',userData);
     }
 
     userFactory.getLoggsParam = function (userData) {
-        return $http.post('/api/searchUserLoggs',userData);
+        return $http.post('/pilote/searchUserLoggs',userData);
     }
 
     userFactory.delete = function(userData){
-        return $http.post('/api/deleteUser',userData);
+        return $http.post('/pilote/deleteUser',userData);
     }
 
     userFactory.update = function(userData){
-        return $http.post('/api/updateUser',userData);
+        return $http.post('/pilote/updateUser',userData);
+    }
+
+    userFactory.updateUserPass = function(userData){
+        return $http.post('/pilote/updateUserPass',userData);
     }
 
     userFactory.checkEmail = function(userData){
-        return $http.post('/api/checkEmail',userData);
+        return $http.post('/pilote/checkEmail',userData);
     }
 
     return userFactory;

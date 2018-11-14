@@ -4,12 +4,11 @@ userLogDb = require('../db/userLogDb');
 let Schema = mongoose.Schema;
 
 
-
 //the Schema
 let UserLogSchema = new Schema({
-    username : String,
-    log_In : {type : String, required: true  },
-    log_Out : {type : String, required: true }
+    idUser: String,
+    log_In: {type: String, required: true},
+    log_Out: {type: String, required: true}
 
 });
 

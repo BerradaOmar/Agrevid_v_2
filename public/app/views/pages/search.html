@@ -1,25 +1,52 @@
-<div style="float: left">
-    <div  class="list-group" ng-repeat="x in video.youtubeVideos">
-        <!--<a class="list-group-item list-group-item-action" ng-repeat="x in video.youtubeVideos" href="{{'https://www.youtube.com/watch?v='+x.id}}">{{x.title}}
-            <-&#45;&#45;&#45;&#45;</a>-->
-        <button style="width: 320px;" class="list-group-item list-group-item-action" ng-click="video.streamYoutubeVideo(x)">
-            {{x.title}}
-        </button>
-
-        <img style="width: 320px; height: 180px;" src="{{x.raw.snippet.thumbnails.medium.url}}"
-             ng-click="video.streamYoutubeVideo(x)">
+<nav class="navbar navbar-default" style="width: 500px; float: right">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Source de videos</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" ng-click="video.youtubeList = true">Youtube</a></li>
+            <li><a href="#" ng-click="video.youtubeList = false">Vimeo</a></li>
+        </ul>
     </div>
+</nav>
 
+
+
+<div  ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;margin-left: 700px;float: right;">
+    <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos" style="width:400px;">
+        <img src="{{x.raw.snippet.thumbnails.medium.url}}" ng-click="video.streamYoutubeVideo(x)" alt="ALT NAME"
+             class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
+        <div class="caption" class="pull-left">
+
+            <h5>
+                <a href="#" ng-click="video.streamYoutubeVideo(x)">{{x.title}}</a>
+            </h5>
+            <small>{{x.channel.title}}</small>
+        </div>
+    </div>
 </div>
 
-<div style="float: left; margin-left: 500px;">
-    <div class="list-group" ng-repeat="y in video.vimeoVideos">
+<div  ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px;margin-left: 700px;float: right ">
+    <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos" style="width:400px;">
+        <img src="{{y.pictures.sizes[3].link}}" ng-click="video.streamVimeoVideo(y)" alt="ALT NAME"
+             class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
+        <div class="caption" class="pull-left">
 
-        <button style="width: 320px;" class="list-group-item list-group-item-action" ng-click="video.streamVimeoVideo(y)">
-            {{y.name}}
-        </button>
-
-        <img style="width: 320px; height: 180px;" src="{{y.pictures.sizes[3].link}}"
-             ng-click="video.streamVimeoVideo(y)">
+            <h5>
+                <a href="#" ng-click="video.streamVimeoVideo(y)">{{y.name}}</a>
+            </h5>
+            <small>{{y.user.name}}</small>
+        </div>
     </div>
+</div>
+
+<h4 style="position: relative"> {{video.title}}</h4>
+<div>
+    <video  id="vid_frame" controls controlsList="nodownload"
+           src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"
+           type="video/mp4" frameborder="0" controls></video>
+</div>
+
+
+
 </div>

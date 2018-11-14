@@ -23,15 +23,15 @@ angular.module('videoService',[])
 
 
     videoFactory.search = function (title) {
-        return $http.get('/apiVideo/search/'+$window.localStorage.token+'/'+title);
+        return $http.get('/pilote/search/'+$window.localStorage.token+'/'+title);
     }
 
     videoFactory.searchYoutubeVideo = function(title){
-        return $http.get('/apiVideo/searchYoutubeVideos/'+title);
+        return $http.get('/pilote/searchYoutubeVideos/'+title);
     }
 
     videoFactory.searchVimeoVideo = function(title){
-        return $http.get('/apiVideo/searchVimeoVideos/'+title);
+        return $http.get('/pilote/searchVimeoVideos/'+title);
     }
 
     return videoFactory;

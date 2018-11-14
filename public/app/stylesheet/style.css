@@ -9,6 +9,15 @@ a {
 
 }
 
+video{
+    position: absolute;
+    top : 180px;
+    width: 640px;
+    height: 360px;
+}
+
+
+
 .hideFromSight {
     display:none;
     visibility: hidden;
