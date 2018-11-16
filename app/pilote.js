@@ -47,7 +47,7 @@ module.exports = function (app, express) {
                 name: req.body.name,
                 username: req.body.username,
                 password: req.body.password,
-                admin: false
+                admin: req.body.admin
             }
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred

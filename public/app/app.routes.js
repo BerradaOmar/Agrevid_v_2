@@ -40,7 +40,8 @@ angular.module('appRoutes',['ngRoute'])
             templateUrl: 'app/views/pages/search.html'
         })
 
-        .otherwise('/');
+        .otherwise({redirectTo : '/'});
 
     $locationProvider.html5Mode(true);
+    $locationProvider.hashPrefix('');
 })
