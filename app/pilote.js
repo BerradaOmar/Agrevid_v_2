@@ -273,13 +273,14 @@ module.exports = function (app, express) {
     })
     /******************************************************************************/
     /*REQUETES POUR API VIDEO (apiVideo.js)*******************************************************/
-    api.get('/search/:token/:search', function (req, res) {
+    api.get('/search/:search', function (req, res) {
         request.get(
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
+                    'x-access-token' : req.headers['x-access-token']
                 },
-                url: 'https://agrevid.com:3002/search/' + req.params.token + '/' + req.params.search + '',
+                url: 'https://agrevid.com:3002/search/'+ req.params.search +'',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred

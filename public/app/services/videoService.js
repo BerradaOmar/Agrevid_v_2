@@ -23,7 +23,7 @@ angular.module('videoService',[])
 
 
     videoFactory.search = function (title) {
-        return $http.get('/pilote/search/'+$window.localStorage.token+'/'+title);
+        return $http.get('/pilote/search/'+title);
     }
 
     videoFactory.searchYoutubeVideo = function(title){

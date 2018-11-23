@@ -44,8 +44,8 @@ let secretKey = config.secretKey;
 let jsonwebtoken = require('jsonwebtoken');
 
 
-api.get('/search/:token/:search', function (req, res) {
-    let token = req.params.token;
+api.get('/search/:search', function (req, res) {
+    let token = req.headers['x-access-token'];
     let search = req.params.search;
     //check if token exist
     if (token) {
