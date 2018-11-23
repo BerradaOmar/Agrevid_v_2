@@ -78,6 +78,7 @@ module.exports = function (app, express) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             url: 'https://agrevid.com:3001/logoutDate',
+            form: {id : req.body.id}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received

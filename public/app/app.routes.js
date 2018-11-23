@@ -28,13 +28,13 @@ angular.module('appRoutes',['ngRoute'])
             templateUrl: 'app/views/pages/logout.html'
         })
 
-        .when('/video',{
+       /* .when('/video',{
             templateUrl: 'app/views/pages/videoStream.html'
         })
 
         .when('/videoVimeo',{
             templateUrl: 'app/views/pages/videoStreamVimeo.html'
-        })
+        })*/
 
         .when('/search',{
             templateUrl: 'app/views/pages/search.html'

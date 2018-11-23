@@ -1,7 +1,7 @@
 angular.module('videoCtrl', ['videoService'])
 
 
-    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route, $scope) {
+    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route) {
         let vm = this;
         vm.url = '';
         vm.title = '';
@@ -70,6 +70,8 @@ angular.module('videoCtrl', ['videoService'])
             // $location.path('/videoVimeo');
             $route.reload();
         }
+
+
 
 
     })

@@ -38,6 +38,7 @@ const vidl = require('vimeo-downloader');
 const Vimeo = require('vimeo').Vimeo;
 const client = new Vimeo(config.CLIENT_ID, config.CLIENT_SECRET, config.ACCESS_TOKEN);
 
+let dateLogin;
 
 let secretKey = config.secretKey;
 
@@ -63,7 +64,7 @@ function createToken(user) {
         username: user.username,
         admin: user.admin
     }, secretKey, {
-        //Le temps où l'utilisateur peut rester connecté avant de devoir se reconnecter
+        //Le temps (ici 1h) où l'utilisateur peut rester connecté avant de devoir se reconnecter
         expiresIn: 3600
     });
 
@@ -114,7 +115,7 @@ api.post('/userSendModifyPass', function (req, res) {
 
                         // and send the new random pass
                         let mailOptions = {
-                            from: 'agredivtube@gmail.com',
+                            from: 'agrevid@gmail.com',
                             to: user.username,
                             subject: 'Sending Email using Node.js',
                             text: 'That was easy!' + password
@@ -194,7 +195,6 @@ api.post('/login', function (req, res) {
             } else {
                 //Create a token for the login
                 let token = createToken(user);
-                userConnected = user;
                 res.json({
                     success: true,
                     message: "Successfully logged in !" + (new Date()).toLocaleString(),
@@ -202,10 +202,10 @@ api.post('/login', function (req, res) {
                 });
 
                 //save date and time for login
-                dateLogin = (new Date()).toLocaleString();
+                this.dateLogin = (new Date()).toLocaleString();
                 let userLoginDate = new UserLog({
                     idUser: user._id,
-                    log_In: dateLogin,
+                    log_In: this.dateLogin,
                     log_Out: "not yet"
                 });
 
@@ -218,14 +218,16 @@ api.post('/login', function (req, res) {
 
 api.post('/logoutDate', function (req, res) {
 
-    let myquery = {idUser: userConnected._id, log_In: dateLogin};
+    let myquery = {idUser: req.body.id, log_In: this.dateLogin};
     let newvalues = {$set: {log_Out: (new Date().toLocaleString())}};
-    UserLog.updateOne(myquery, newvalues, function (err) {
-        if (err)
-            res.json({message: 'err'});
-        else
-            res.json({message: 'logout date is saved'});
-    });
+
+        UserLog.updateOne(myquery, newvalues, function (err) {
+            if (err)
+                res.json({message: 'err'});
+            else
+                res.json({message: 'logout date is saved'});
+        });
+
 });
 
 
@@ -256,10 +258,15 @@ api.use(function (req, res, next) {
 
 api.get('/userhistorys', function (req, res) {
     UserHistory.find({idUser: req.decoded.id}, function (err, userHis) {
-        if (err) {
-            res.send(err);
+        if (userHis) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(userHis);
         }
-        res.json(userHis);
+        else {
+            res.json(new UserHistory());
+        }
     });
 });
 
@@ -268,7 +275,7 @@ api.post('/userhistorysParam', function (req, res) {
     User.findOne({
         username: req.body.username
     }).select('username').exec(function (err, user) {
-        if (user !== null) {
+        if (user) {
             UserHistory.find({idUser: user._id}, function (err, userHis) {
                 if (err) {
                     res.json(err);
@@ -277,6 +284,9 @@ api.post('/userhistorysParam', function (req, res) {
                 if (userHis.length == 0) res.json({request_Video: 'No Date', request_date: 'No Date'});
                 else res.json(userHis);
             })
+        }
+        else {
+            res.json(new UserHistory());
         }
     })
 });
@@ -287,30 +297,45 @@ api.get('/me', function (req, res) {
 
 api.get('/users', function (req, res) {
     User.find({}, function (err, users) {
-        if (err) {
-            res.send(err);
+        if (users) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(users);
         }
-        res.json(users);
+        else{
+            res.json(new User());
+        }
     });
 });
 
 api.post('/user', function (req, res) {
     User.find({username: req.body.username}, function (err, user) {
-        if (err) {
-            res.send(err);
-        }
+        if (user) {
+            if (err) {
+                res.send(err);
+            }
 
-        res.json(user);
+            res.json(user);
+        }
+        else{
+            res.json(new User());
+        }
     });
 });
 
 api.get('/userLoggs', function (req, res) {
     UserLog.find({idUser: req.decoded.id}, function (err, userLoggs) {
-        if (err) {
-            res.send(err);
-        }
+        if(userLoggs) {
+            if (err) {
+                res.send(err);
+            }
 
-        res.json(userLoggs);
+            res.json(userLoggs);
+        }
+        else{
+            res.json(new UserLog());
+        }
     });
 });
 
@@ -318,13 +343,16 @@ api.post('/searchUserLoggs', function (req, res) {
     User.findOne({
         username: req.body.username
     }).select('username').exec(function (err, user) {
-        if (user !== null) {
+        if (user) {
             UserLog.find({idUser: user._id}, function (err, userLoggs) {
                 if (err) {
                     res.send(err);
                 }
                 res.json(userLoggs);
             });
+        }
+        else{
+            res.json(new UserLog());
         }
 
     })

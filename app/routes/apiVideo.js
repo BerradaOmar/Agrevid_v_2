@@ -78,7 +78,7 @@ api.get('/search/:token/:search', function (req, res) {
 api.get('/searchYoutubeVideos/:search', function (req, res) {
 
     let search = req.params.search;
-    console.log(search);
+    // console.log(search);
     //res.writeHead(200, {'Content-Type': 'video/mp4'});
     youtube.searchVideos(search, 25)
         .then(function (results) {
@@ -123,7 +123,9 @@ api.get('/searchVimeoVideos/:search', function (req, res) {
 /*méthode qui stream la video de youtube*/
 api.get('/watchYoutubeVideo/:url', function (req, res) {
     let url = req.params.url;
-    ytdl('https://www.youtube.com/watch?v=' + url).pipe(res);
+    let stream = ytdl('https://www.youtube.com/watch?v=' + url);
+
+    stream.pipe(res);
 })
 
 /*méthode qui stream la video de vimeo*/

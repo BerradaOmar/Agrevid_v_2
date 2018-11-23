@@ -46,7 +46,7 @@ let pilote = require('./app/pilote')(app,express);
 app.use('/pilote',pilote);
 
 //the parent file of the view pages (Angular routing)
-app.get('/',function(req,res){
+app.use(function(req,res){
    res.sendFile(__dirname + '/public/app/views/index.html');
 });
 

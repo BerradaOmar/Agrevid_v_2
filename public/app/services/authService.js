@@ -19,7 +19,6 @@ angular.module('authService', [])
 
         authFactory.logout = function (user) {
             return $http.post('/pilote/logoutDate', user);
-            AuthToken.setToken();
         }
 
         authFactory.isLoggedIn = function () {
