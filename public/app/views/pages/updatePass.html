@@ -1,0 +1,47 @@
+<script type="text/javascript" src="app/res/pass.js"></script>
+
+<div id="collapseOne" style="margin-left: 30%; margin-top: 5%">
+    <div id="demo3" class="embed-responsive-item">
+        <div class="container" ng-controller="UserController as user" style="width:350px;float: left;">
+            <div class="row" >
+                <div class="col-sm-12" >
+                    {{user.hasSecurity()}}
+                    <form method="post" ng-submit="user.updateUserPassToken()">
+
+                        <div ng-if="user.hasSecurity()">
+                            <input type="text" class="input-lg form-control"   placeholder="Code verification" autocomplete="off" ng-model="user.userData.codev" required>
+                        </div>
+
+                        <input type="password" class="input-lg form-control" name="password1" id="password1" placeholder="Nouveau mot de passe" autocomplete="off" ng-model="user.userData.passwordNew">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                                    <span id="8char" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> 8 charactères<br>
+                                <span id="ucase" class="glyphicon glyphicon-remove"
+                                      style="color:#FF0004;"></span> 1 Majuscule
+                            </div>
+                            <div class="col-sm-6">
+                                                    <span id="lcase" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> 1 minuscule<br>
+                                <span id="num" class="glyphicon glyphicon-remove"
+                                      style="color:#FF0004;"></span> 1 nombre
+                            </div>
+                        </div>
+                        <input type="password" class="input-lg form-control" name="password2" id="password2" placeholder="Confirmez le mot de passe" autocomplete="off">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                                    <span id="pwmatch" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> mot de passe identique
+                            </div>
+                        </div>
+                        <br/>
+                        <input type="submit" id="ok" disabled="true" class="col-xs-12 btn btn-danger btn-load btn-lg" data-loading-text="Changing Password..." value="Modifier">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+
+            </div><!--/row-->
+        </div>
+    </div>
+</div>

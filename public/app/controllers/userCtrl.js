@@ -1,6 +1,6 @@
 angular.module('userCtrl', ['userService'])
 
-    .controller('UserController', function (User, Auth, $location, $window, $scope) {
+    .controller('UserController', function (User, Auth, $location, $window, $scope, $routeParams) {
         let vm = this;
         vm.isUpdate = false;
         vm.historys = [];
@@ -19,10 +19,21 @@ angular.module('userCtrl', ['userService'])
         $scope.itemsPerPage = 5;
         $scope.maxSize = 5; //Number of pager buttons to show
 
+
+        //get token in order to change user pass
+        $scope.tokenUser = $routeParams.token;
+        //get access security
+        $scope.hasSecurity = $routeParams.code;
+
         User.all()
             .success(function (data) {
                 vm.users = data;
             })
+
+        vm.hasSecurity = function(){
+            if($scope.hasSecurity==1) return true;
+            else return false;
+        }
 
         vm.getUser = function () {
             User.user(vm.userData).success(function (data) {
@@ -114,6 +125,21 @@ angular.module('userCtrl', ['userService'])
                 $location.path('/login');
                 $window.alert("votre compte a bien été modifié. Appuiyez sur 'OK' pour se connecter.");
             });
+        };
+
+        vm.updateUserPassToken = function () {
+
+
+            User.updateUserPassToken(vm.userData).success(function () {
+
+                $window.localStorage.setItem('token', '');
+
+                $location.path('/login');
+                $window.alert("votre compte a bien été modifier clicker ok pour se connecter");
+
+
+            });
+
         };
 
     })
@@ -260,7 +286,8 @@ angular.module('userCtrl', ['userService'])
             })
 
         }
-        
+
+
     })
 
 

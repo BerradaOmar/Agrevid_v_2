@@ -40,6 +40,11 @@ angular.module('appRoutes',['ngRoute'])
             templateUrl: 'app/views/pages/search.html'
         })
 
+        .when('/updatePass/:token/:code',{
+            templateUrl : 'app/views/pages/updatePass.html',
+            controller : 'UserController'
+        })
+
         .otherwise({redirectTo : '/'});
 
     $locationProvider.html5Mode(true);

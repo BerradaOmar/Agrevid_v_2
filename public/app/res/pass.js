@@ -7,6 +7,7 @@ $("input[type=password]").keyup(function(){
     var demo = document.getElementById("demo");
     var demo2 = document.getElementById("demo2");
     var demo3 = document.getElementById("demo3");
+    var demo4 = document.getElementById("demo4");
     if($("#password1").val().length >= 8){
         $("#8char").removeClass("glyphicon-remove");
         $("#8char").addClass("glyphicon-ok");

@@ -1,24 +1,25 @@
 <div ng-if="main.loggedIn && main.isAdmin" ng-controller="UserController as user">
-    <div class="container">
+    <script type="text/javascript" src="app/res/pass.js"></script>
+
+
+    <div class="container" style="width: 40%">
         <div class="row">
-            <div class="col-sm-6 col-sm-offset-3">
-                <div id="imaginary_container">
-                    <div class="input-group stylish-input-group">
-
-                        <input type="text" class="form-control" placeholder="Search" ng-model="user.userData.username">
-                        <span class="input-group-addon">
-                         <button ng-click="user.getUser()">
-                            <span class="glyphicon glyphicon-search"></span>
-                         </button>
-                        </span>
-
-                    </div>
+            <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <form ng-submit="user.getUser()">
+                        <input type="text" class="  search-query form-control" placeholder="Search"
+                               ng-model="user.userData.username"/>
+                    </form>
+                    <span class="input-group-btn">
+                                    <button class="btn btn-danger" type="button" ng-click="user.getUser()">
+                                        <span class=" glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
                 </div>
-
             </div>
         </div>
-
     </div>
+
 
     </br></br>
 
@@ -201,28 +202,44 @@
                 </div>
 
                 <div class="modal-body">
+
                     <form class="form-signin" method="post" ng-submit="user.addUser()">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user" style="float: left;"> Nom d'utilisateur</i></span>
                             <input type="text" class="form-control" name="name" ng-model="user.userNew.name" required>
-                        </div>
                         <br>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user" style="float: left;"> Email</i></span>
                             <input type="text" class="form-control" name="username" ng-model="user.userNew.username"
                                    required>
-                        </div>
                         <br>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="password"
+
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock" style="float: left;"> Mot de passe</i></span>
+                            <input type="password" class="form-control" name="password1" id="password1"
                                    ng-model="user.userNew.password" required>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                                    <span id="8char" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> 8 charactères<br>
+                                <span id="ucase" class="glyphicon glyphicon-remove"
+                                      style="color:#FF0004;"></span> 1 Majuscule
+                            </div>
+                            <div class="col-sm-6">
+                                                    <span id="lcase" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> 1 minuscule<br>
+                                <span id="num" class="glyphicon glyphicon-remove"
+                                      style="color:#FF0004;"></span> 1 nombre
+                            </div>
                         </div>
                         <br>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="passConfirm"
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock" style="float: left;"> Confirmez le mot de passe</i></span>
+                            <input type="password" class="form-control" name="password2" id="password2"
                                    ng-model="user.userNew.passConfirm" required>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                                    <span id="pwmatch" class="glyphicon glyphicon-remove"
+                                                          style="color:#FF0004;"></span> mot de passe identique
+                            </div>
                         </div>
                         <br>
                         <span class="label label-danger">Role d'utilisation</span>
@@ -233,7 +250,7 @@
 
 
                         </div>
-                        <button type="submit" class="btn btn-danger">Add</button>
+                        <button type="submit" id="ok" disabled="true" class="btn btn-danger">Add</button>
 
                     </form>
                 </div>

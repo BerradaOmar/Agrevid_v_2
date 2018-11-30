@@ -38,6 +38,15 @@ const vidl = require('vimeo-downloader');
 const Vimeo = require('vimeo').Vimeo;
 const client = new Vimeo(config.CLIENT_ID, config.CLIENT_SECRET, config.ACCESS_TOKEN);
 
+// Download the helper library from https://www.twilio.com/docs/node/install
+// Your Account Sid and Auth Token from twilio.com/console
+const accountSid = 'AC765be5d355ca81506f732b0a311b1363';
+const authToken = 'f2bb4924ba7d824f4c646b15c3df9072';
+const sms = require('twilio')(accountSid, authToken);
+//randomString generator
+const randomstring = require("randomstring");
+
+
 let dateLogin;
 
 let secretKey = config.secretKey;
@@ -62,6 +71,7 @@ function createToken(user) {
         id: user._id,
         name: user.name,
         username: user.username,
+        tel: user.tel,
         admin: user.admin
     }, secretKey, {
         //Le temps (ici 1h) où l'utilisateur peut rester connecté avant de devoir se reconnecter
@@ -70,6 +80,24 @@ function createToken(user) {
 
     return token;
 }
+
+function createTokenforUpdatePass(user, codeVerification) {
+    let token = jsonwebtoken.sign({
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        tel: user.tel,
+        admin: user.admin,
+        codev: codeVerification,
+        useMyNumForSec: user.useMyNumForSec
+    }, secretKey, {
+        //Le temps où l'utilisateur peut rester connecté avant de devoir se reconnecter
+        expiresIn: 600
+    });
+
+    return token;
+}
+
 
 
 api.post('/checkEmail', function (req, res) {
@@ -86,59 +114,80 @@ api.post('/checkEmail', function (req, res) {
 });
 
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
-api.post('/userSendModifyPass', function (req, res) {
+//send url to updating pass
+api.post('/userSendModifyPassToken', function (req, res) {
+
     //check mail
     if (validator.validate(req.body.username)) {
 
         User.findOne({
             username: req.body.username
-        }).select('_id name username password admin').exec(function (err, user) {
+        }).select('_id name username password tel admin useMyNumForSec').exec(function (err, user) {
             if (err) {
                 res.send(err);
+                console.log(err);
             }
             else if (user) {
-                //generer un nouveau pass
-                let password = 'Stoto_' + Math.floor(Math.random() * (1000 + 100 + 1) + 100);
-
-                //enregistrer le mot de pass
-
-                let passwordlod = user.password;
-                let passwordNew = bcrypt.hashSync(password, null, null);
-
-                // And modify the old one
-                let myquery = {_id: user._id};
-                let newvalues = {$set: {password: passwordNew}};
-                User.updateOne(myquery, newvalues, function (err) {
-                    if (err)
-                        console.log(err);
-                    else {
-
-                        // and send the new random pass
-                        let mailOptions = {
-                            from: 'agrevid@gmail.com',
-                            to: user.username,
-                            subject: 'Sending Email using Node.js',
-                            text: 'That was easy!' + password
-                        };
-
-                        transporter.sendMail(mailOptions, function (error, info) {
-                            if (error) {
-                                console.log(error);
-                            } else {
-                                console.log('Email sent: ' + info.response);
-                            }
-                        });
 
 
-                        res.json({
-                            message: "votre password a bien été envoyé, verifiez votre boite email!",
-                            succed: true
+                let token;
+                let hasTel = false;
 
-                        });
+                //verifier si l'utilisateur possede un tel + active securité
+                if (user.useMyNumForSec) {
+                    //generer code de verification
+                    codev = randomstring.generate(7);
+                    //generer un token pour l'utulisateur
+                    token = createTokenforUpdatePass(user, codev);
+                    //envoyé le code de verification par sms
+                    sms.messages
+                        .create({
+                            body: 'Agrevid your code verification is : ' + codev,
+                            from: '+33756799166',
+                            to: user.tel
+                        })
+                        .then(message => console.log(message.sid))
+                        .done();
 
+                    hasTel = true;
+
+
+                }
+                else {
+                    //token without a code verification
+                    token = createTokenforUpdatePass(user, '');
+
+                }
+
+                //envoiyé le lien de changement de pass
+                //modifier le token pour savoir si l user possede la securité
+                let sec;
+                if (user.useMyNumForSec) sec = 1;
+                else sec = 0;
+
+                let mailOptions = {
+                    from: 'agrevid@gmail.com',
+                    to: user.username,
+                    subject: 'lien de changement de mot de pass ',
+                    text: 'https://localhost:3000/updatePass/' + token + '/' + sec
+                };
+
+
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
                     }
-                })
+                });
 
+
+                res.json({
+                    message: "votre password a bien été envoyé, verifiez votre boite email!",
+                    succed: true,
+                    tel: hasTel
+
+                });
 
             }
             else {
@@ -163,10 +212,17 @@ api.post('/signup', function (req, res) {
         name: req.body.name,
         username: req.body.username,
         password: req.body.password,
-        admin: req.body.admin
+        tel: req.body.tel,
+        admin: req.body.admin,
+        useMyNumForSec: req.body.useMyNumForSec
     });
 
     let token = createToken(user);
+
+    if(user.tel=="") {
+        user.tel="-";
+        user.useMyNumForSec=false;
+    }
 
     user.save(function (err) {
         if (err) {
@@ -221,12 +277,12 @@ api.post('/logoutDate', function (req, res) {
     let myquery = {idUser: req.body.id, log_In: this.dateLogin};
     let newvalues = {$set: {log_Out: (new Date().toLocaleString())}};
 
-        UserLog.updateOne(myquery, newvalues, function (err) {
-            if (err)
-                res.json({message: 'err'});
-            else
-                res.json({message: 'logout date is saved'});
-        });
+    UserLog.updateOne(myquery, newvalues, function (err) {
+        if (err)
+            res.json({message: 'err'});
+        else
+            res.json({message: 'logout date is saved'});
+    });
 
 });
 
@@ -255,6 +311,84 @@ api.use(function (req, res, next) {
 });
 
 //Destination B here !
+
+api.post('/updateUserPassToken', function (req, res) {
+    // decoder le token et recuperer le user
+    let token = req.headers['x-access-token'];
+
+    //check if token exist
+    if (token) {
+        jsonwebtoken.verify(token, secretKey, function (err, userInfoToken) {
+            if (err) {
+                console.log(err);
+
+            }
+            else {
+                if (userInfoToken) {
+                    //all the info of user is in var user
+
+                    let passwordNew = bcrypt.hashSync(req.body.passwordNew, null, null);
+                    let myquery = {_id: userInfoToken.id};
+                    let newvalues = {$set: {password: passwordNew}};
+                    if (userInfoToken.useMyNumForSec) {
+
+                        if (req.body.codev == userInfoToken.codev) {
+
+                            console.log('depasse code v');
+                            // And modify the old one if the verification is correct
+
+                            User.updateOne(myquery, newvalues, function (err) {
+                                if (err)
+                                    console.log(err);
+                                else
+                                    res.json({
+                                        message: " new pass has been created !"
+
+
+                                    });
+                            })
+
+                        }
+                        else {
+                            console.log('ne depasse code v');
+                            res.json({
+                                message: " verification code not valid !",
+                                success: false
+
+
+                            });
+
+                        }
+                    }
+                    else {
+                        // And modify the old one if the verification is correct
+
+                        User.updateOne(myquery, newvalues, function (err) {
+                            if (err)
+                                console.log(err);
+                            else
+                                res.json({
+                                    message: " new pass has been created !",
+
+
+                                });
+                        })
+                    }
+
+                }
+
+            }
+        });
+    } else {
+        res.json({
+            success: false,
+            message: "le lien de changement de mot de pass est expiré demander un nouveau lien"
+        });
+
+    }
+
+
+});
 
 api.get('/userhistorys', function (req, res) {
     UserHistory.find({idUser: req.decoded.id}, function (err, userHis) {
@@ -303,7 +437,7 @@ api.get('/users', function (req, res) {
             }
             res.json(users);
         }
-        else{
+        else {
             res.json(new User());
         }
     });
@@ -318,7 +452,7 @@ api.post('/user', function (req, res) {
 
             res.json(user);
         }
-        else{
+        else {
             res.json(new User());
         }
     });
@@ -326,14 +460,14 @@ api.post('/user', function (req, res) {
 
 api.get('/userLoggs', function (req, res) {
     UserLog.find({idUser: req.decoded.id}, function (err, userLoggs) {
-        if(userLoggs) {
+        if (userLoggs) {
             if (err) {
                 res.send(err);
             }
 
             res.json(userLoggs);
         }
-        else{
+        else {
             res.json(new UserLog());
         }
     });
@@ -351,7 +485,7 @@ api.post('/searchUserLoggs', function (req, res) {
                 res.json(userLoggs);
             });
         }
-        else{
+        else {
             res.json(new UserLog());
         }
 

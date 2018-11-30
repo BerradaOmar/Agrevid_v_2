@@ -23,10 +23,10 @@ module.exports = function (app, express) {
         });
     })
 
-    api.post('/userSendModifyPass', function (req, res) {
+    api.post('/userSendModifyPassToken', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/userSendModifyPass',
+            url: 'https://agrevid.com:3001/userSendModifyPassToken',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -47,7 +47,9 @@ module.exports = function (app, express) {
                 name: req.body.name,
                 username: req.body.username,
                 password: req.body.password,
-                admin: req.body.admin
+                tel: req.body.tel,
+                admin: req.body.admin,
+                useMyNumForSec: req.body.security
             }
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -271,6 +273,24 @@ module.exports = function (app, express) {
             // console.log(response);
         });
     })
+
+    api.post('/updateUserPassToken', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3001/updateUserPassToken',
+            form: {passwordNew: req.body.passwordNew, codev: req.body.codev}
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
     /******************************************************************************/
     /*REQUETES POUR API VIDEO (apiVideo.js)*******************************************************/
     api.get('/search/:search', function (req, res) {
@@ -325,11 +345,13 @@ module.exports = function (app, express) {
             });
     })
 
+
     api.get('/watchYoutubeVideo/:url', function (req, res) {
         request.get(
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
+                    'x-access-token' : req.headers['x-access-token']
                 },
                 url: 'https://agrevid.com:3002/watchYoutubeVideo/' + req.params.url + '',
             }
@@ -337,6 +359,8 @@ module.exports = function (app, express) {
                 console.log('error:', error); // Print the error if one occurred
                 console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 // console.log('body:', body); // Print the HTML for the Google homepage.
+
+
             }).pipe(res);
     })
 
@@ -345,6 +369,7 @@ module.exports = function (app, express) {
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
+                    'x-access-token' : req.headers['x-access-token']
                 },
                 url: 'https://agrevid.com:3002/watchVimeoVideo/' + req.params.url + '',
             }
@@ -354,6 +379,7 @@ module.exports = function (app, express) {
                 // console.log('body:', body); // Print the HTML for the Google homepage.
             }).pipe(res);
     })
+
 
     api.get('/watchVideo/:src/:url', function (req, res) {
         if (req.params.src === 'youtube') {
@@ -369,6 +395,7 @@ module.exports = function (app, express) {
                     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                     // console.log('body:', body); // Print the HTML for the Google homepage.
                 }).pipe(res);
+
         } else if (req.params.src === 'vimeo') {
             request.get(
                 {

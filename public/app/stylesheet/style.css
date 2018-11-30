@@ -9,12 +9,12 @@ a {
 
 }
 
-video{
-    position: absolute;
-    top : 180px;
-    width: 640px;
-    height: 360px;
-}
+/*video{*/
+    /*top : 180px;*/
+    /*width: 640px;*/
+    /*height: 360px;*/
+/*}*/
+
 
 
 
@@ -29,6 +29,15 @@ video{
     top: 40%;
     width: 100%;
     text-align: center;
+}
+
+#wrapper {
+    background-color: green; /* for visualization purposes */
+    text-align: center;
+}
+#yourdiv {
+    background-color: red; /* for visualization purposes */
+    display: inline-block;
 }
 
 .logo {
@@ -290,3 +299,20 @@ video{
     right: 0;
     top: -17px;
 }
+
+
+
+.row2{
+    margin-top:40px;
+    padding: 0 10px;
+}
+
+.clickable{
+    cursor: pointer;
+}
+
+.panel-heading span {
+    margin-top: -20px;
+    font-size: 15px;
+}
+

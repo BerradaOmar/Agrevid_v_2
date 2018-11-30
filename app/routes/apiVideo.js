@@ -5,7 +5,6 @@ let api = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-
 api.use(bodyParser.urlencoded({extended: true}));
 api.use(bodyParser.json());
 api.use(morgan('dev'));
@@ -42,7 +41,7 @@ let secretKey = config.secretKey;
 
 //for creating tokens
 let jsonwebtoken = require('jsonwebtoken');
-
+let userData = '';
 
 api.get('/search/:search', function (req, res) {
     let token = req.headers['x-access-token'];
@@ -55,6 +54,7 @@ api.get('/search/:search', function (req, res) {
             } else {
                 //all the info of user is down here after authentication
                 req.decoded = decoded;
+                userData = decoded;
                 //need instance of history in order to add it while the search has been done
                 let userH = new UserHistory({
                     idUser: req.decoded.id,
@@ -120,13 +120,23 @@ api.get('/searchVimeoVideos/:search', function (req, res) {
     })
 })
 
+let stream = '' ;
 /*méthode qui stream la video de youtube*/
 api.get('/watchYoutubeVideo/:url', function (req, res) {
+    /*if(stream !== ''){
+        stream.end();
+    }*/
     let url = req.params.url;
-    let stream = ytdl('https://www.youtube.com/watch?v=' + url);
+    stream = ytdl('https://www.youtube.com/watch?v=' + url);
+
+    res.on('pipe',function (source) {
+        console.log('fired');
+    })
 
     stream.pipe(res);
 })
+
+
 
 /*méthode qui stream la video de vimeo*/
 api.get('/watchVimeoVideo/:url', function (req, res) {

@@ -30,7 +30,7 @@ angular.module('authService', [])
         }
 
         authFactory.userSendModifyPass = function (data) {
-            return $http.post('/pilote/userSendModifyPass', data);
+            return $http.post('/pilote/userSendModifyPassToken', data);
         }
 
         authFactory.getUser = function () {
@@ -44,10 +44,15 @@ angular.module('authService', [])
     })
 
 
-    .factory('AuthToken', function ($window) {
+    .factory('AuthToken', function ($window,$routeParams) {
         let authTokenFactory = {};
 
         authTokenFactory.getToken = function () {
+            if($routeParams.token) {
+                $window.localStorage.setItem('token', $routeParams.token);
+                $routeParams.token = '';
+                $routeParams.code='';
+            }
             return $window.localStorage.getItem('token');
         }
 
