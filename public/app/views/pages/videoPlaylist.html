@@ -1,0 +1,36 @@
+<div ng-if="main.loggedIn">
+    <div style="overflow-y: auto;height: 500px;margin-left: 700px;">
+        <div class="thumbnail clearfix" ng-repeat="x in selectedPlaylist.playlist" style="width:400px;">
+            <img src="{{x.image}}" ng-click="" alt="ALT NAME" class="pull-left span2 clearfix"
+                 style='width:168px;height:94px;   margin-right:10px'>
+            <div class="caption" class="pull-left">
+
+                <h5>
+                    <a href="#" ng-click="playlist.goToVideoPlaylistBis(selectedPlaylist,x)">{{x.title}}</a>
+                </h5>
+                <small><b>source: </b>{{x.source}}</small>
+                <button ng-click="playlist.deleteVideoBis(selectedPlaylist,x)" class="close"> x</button>
+            </div>
+        </div>
+    </div>
+    <div class="vid-container" style="position: fixed;
+  width: 600px;
+  height: 200px;
+  left: 50%;
+  top: 10%;
+  margin-left: -600px;">
+        <div style="display: inline-block">
+            <h3 style="margin-top: 0px">Playlist : {{selectedPlaylist.namePlaylist}} </h3>
+            <button ng-click="playlist.deletePlaylistBis(selectedPlaylist.namePlaylist)" class="btn btn-success"> delete
+                playlist
+            </button>
+        </div>
+        <h4 style="margin-top: 5px">{{selectedVideo.title}}</h4>
+        <div class="embed-responsive embed-responsive-16by9">
+            <video class="embed-responsive-item" width="640"
+                   height="360" id="vid_frame" controls controlsList="nodownload"
+                   src="{{'/pilote/watchVideo/'+selectedVideo.source+'/'+selectedVideo.url}}"
+                   type="video/mp4" frameborder="0" controls></video>
+        </div>
+    </div>
+</div>

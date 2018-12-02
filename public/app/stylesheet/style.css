@@ -189,15 +189,15 @@ a {
  ############################### */
 .vid-list-container {
     width: 70%;
-    overflow: hidden;
     margin-top: 5px;
     margin-left: 14%;
-    padding-bottom: 15px;
+    padding-bottom: auto;
     background-color: #FFE4E1;
+    overflow-y: hidden;
 }
 
 .vid-list {
-    width: 1344px;
+    width: 900px;
     position: relative;
     top:0;
     left: 0;
@@ -206,7 +206,7 @@ a {
 .vid-item {
     display: block;
     width: 148px;
-    height: 148px;
+    height: auto;
     float: left;
     margin: 0;
     padding: 10px;

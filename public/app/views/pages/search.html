@@ -1,12 +1,11 @@
 <div ng-if="main.loggedIn">
 
 
-
     <!--<h4 style="position: relative"> {{video.title}}</h4>-->
     <!--<div>-->
-        <!--<video id="vid_frame" controls controlsList="nodownload"-->
-               <!--src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"-->
-               <!--type="video/mp4" frameborder="0" controls></video>-->
+    <!--<video id="vid_frame" controls controlsList="nodownload"-->
+    <!--src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"-->
+    <!--type="video/mp4" frameborder="0" controls></video>-->
     <!--</div>-->
 
 
@@ -17,12 +16,54 @@
                     <div>
                         <h4> {{video.title}}</h4>
                         <div class="embed-responsive embed-responsive-16by9">
-                        <video class="embed-responsive-item" width="640"
-                                height="360" id="vid_frame" controls controlsList="nodownload"
-                               src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"
-                               type="video/mp4" frameborder="0" controls></video>
+                            <video class="embed-responsive-item" width="640"
+                                   height="360" id="vid_frame" controls controlsList="nodownload"
+                                   src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"
+                                   type="video/mp4" frameborder="0" controls>
+                            </video>
+                        </div>
+                        <button class="btn-toolbar btn-success" data-toggle="modal" data-target="#myModal" data-toggle="tooltip"
+                                title="ajouter dans une playlist" ng-click="playlist.getListPlaylist()">
+                            <span class="glyphicon glyphicon-plus-sign"></span> Ajouter à une playlist
+
+                        </button>
+                        <!-- Modal -->
+                        <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content" style="width:70%" >
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <div class="modal-header">
+
+                                        <h4 class="modal-title">Add Video into playlist</h4>
+                                    </div>
+
+                                    <div class="modal-body" >
+                                        <form>
+                                            <p>Select a playlist :</p>
+                                            <select ng-model="namePlaylistS" ng-options="p for p in arrayNomPlaylist" >
+                                            </select>
+                                            <button ng-click="playlist.addVideo(namePlaylistS,video.url,video.title,video.videoSrc,video.image)" > add video</button>
+                                        </form>
+                                        <form class="form-signin" method="post" ng-submit="playlist.createAndAdd(nameplaylistT,video.url,video.title,video.videoSrc,video.image)">
+                                            <p style="padding-top: 10px;">Or create a new playlist :</p>
+                                            new playlist : <input type="text" name="nameplaylistT" ng-model="nameplaylistT">
+                                            <button type="submit" >Create new Playlist and add video</button>
+                                        </form>
+
+                                    </div>
+
+
+                                    <div class="modal-footer">
+                                    </div>
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -45,7 +86,8 @@
 
                     <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;">
                         <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos" style="width:400px;">
-                            <img src="{{x.raw.snippet.thumbnails.medium.url}}" ng-click="video.streamYoutubeVideo(x)" alt="ALT NAME"
+                            <img src="{{x.raw.snippet.thumbnails.medium.url}}" ng-click="video.streamYoutubeVideo(x)"
+                                 alt="ALT NAME"
                                  class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
                             <div class="caption" class="pull-left">
 
@@ -75,5 +117,8 @@
         </div>
     </div>
 
-</div>
 
+
+
+
+</div>

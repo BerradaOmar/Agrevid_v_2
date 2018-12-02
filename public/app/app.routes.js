@@ -45,6 +45,11 @@ angular.module('appRoutes',['ngRoute'])
             controller : 'UserController'
         })
 
+        .when('/videoPlaylist',{
+            templateUrl: 'app/views/pages/videoPlaylist.html'
+        })
+
+
         .otherwise({redirectTo : '/'});
 
     $locationProvider.html5Mode(true);

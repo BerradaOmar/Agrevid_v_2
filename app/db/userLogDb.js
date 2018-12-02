@@ -4,7 +4,7 @@ let mongoose = require('mongoose');
 
 let userLogDb = mongoose.createConnection(config.userLogDb,{ useNewUrlParser: true });
 
-db.on('error', function(err){
+userLogDb.on('error', function(err){
     if(err) throw err;
 });
 

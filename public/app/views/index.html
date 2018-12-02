@@ -8,8 +8,6 @@
     <link rel="stylesheet" type="text/css" href="app/stylesheet/style.css">
 
 
-
-
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -25,15 +23,17 @@
     <script type="text/javascript" src="app/res/gestionDeComptePanel.js"></script>
 
 
-
     <script type="text/javascript" src="app/services/authService.js"></script>
     <script type="text/javascript" src="app/services/userService.js"></script>
     <script type="text/javascript" src="app/services/videoService.js"></script>
+    <script type="text/javascript" src="app/services/playlistService.js"></script>
 
 
     <script type="text/javascript" src="app/controllers/mainController.js"></script>
     <script type="text/javascript" src="app/controllers/userCtrl.js"></script>
     <script type="text/javascript" src="app/controllers/videoCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/playlistCtrl.js"></script>
+
 
     <script type="text/javascript" src="app/app.routes.js"></script>
     <script type="text/javascript" src="app/app.js"></script>
@@ -41,45 +41,52 @@
 </head>
 <body ng-controller="MainController as main">
 <div ng-controller="VideoController as video">
+    <div ng-controller="playlistCtrl as playlist">
 
-<header>
-    <div class="navbar navbar-default">
-        <div class="container">
 
-            <div class="navbar-header">
-                <a href="/" style="text-decoration: none" class="logoStyle">
-                    Agrévid
-                </a>
+        <header>
+            <div class="navbar navbar-default">
+                <div class="container">
+
+                    <div class="navbar-header">
+                        <a href="/" style="text-decoration: none" class="logoStyle">
+                            Agrévid
+                        </a>
+                    </div>
+
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li ng-if="!main.loggedIn"><a href="/login">Connexion</a></li>
+                        <li ng-if="!main.loggedIn"><a href="/signup">Inscription</a></li>
+                        <li ng-if="main.loggedIn">
+                            <form ng-submit="video.doSearch()" class="margin-right-4em">
+                                <input class="form-control input-lg" type="text" name="search"
+                                       ng-model="video.search.title"
+                                       placeholder="Rechercher une video ...">
+                            </form>
+                        </li>
+                        <li ng-if="main.loggedIn"><a href="#">Hello {{main.user.name}}</a></li>
+<!--
+                        <li ng-if="main.loggedIn"><a href="/playlist">Playlists</a></li>
+-->
+                        <li ng-if="main.loggedIn"><a href="#" ng-click="playlist.goToPlaylist()">Playlists</a></li>
+                        <li ng-if="main.isAdmin && main.loggedIn"><a href="/administration">Administration</a></li>
+                        <li ng-if="main.loggedIn"><a href="/gestion">Gestion de compte</a></li>
+                        <li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Déconnexion</a></li>
+
+                    </ul>
+
+                </div>
+
             </div>
+        </header>
 
 
-            <ul class="nav navbar-nav navbar-right">
-                <li ng-if="!main.loggedIn"><a href="/login">Connexion</a></li>
-                <li ng-if="!main.loggedIn"><a href="/signup">Inscription</a></li>
-                <li ng-if="main.loggedIn">
-                    <form  ng-submit="video.doSearch()" class="margin-right-4em">
-                        <input class="form-control input-lg"  type="text" name="search" ng-model="video.search.title"
-                               placeholder="Rechercher une video ...">
-                    </form>
-                </li>
-                <li ng-if="main.loggedIn"><a href="#">Hello {{main.user.name}}</a></li>
-                <li ng-if="main.loggedIn"><a href="/playlist">Playlists</a></li>
-                <li ng-if="main.isAdmin && main.loggedIn"><a href="/administration">Administration</a></li>
-                <li ng-if="main.loggedIn"><a href="/gestion">Gestion de compte</a></li>
-                <li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Déconnexion</a></li>
-
-            </ul>
-
-        </div>
+        <main class="container">
+            <div ng-view></div>
+        </main>
 
     </div>
-</header>
-
-
-<main class="container">
-    <div   ng-view></div>
-</main>
-
 </div>
 </body>
 </html>

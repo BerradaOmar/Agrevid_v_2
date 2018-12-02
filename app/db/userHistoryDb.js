@@ -4,7 +4,7 @@ let mongoose = require('mongoose');
 
 let userHistoryDb = mongoose.createConnection(config.userHistoryDb,{ useNewUrlParser: true });
 
-db.on('error', function(err){
+userHistoryDb.on('error', function(err){
     if(err) throw err;
 });
 

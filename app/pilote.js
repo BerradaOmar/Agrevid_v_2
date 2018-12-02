@@ -80,7 +80,7 @@ module.exports = function (app, express) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             url: 'https://agrevid.com:3001/logoutDate',
-            form: {id : req.body.id}
+            form: {id: req.body.id}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -298,9 +298,9 @@ module.exports = function (app, express) {
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'x-access-token' : req.headers['x-access-token']
+                    'x-access-token': req.headers['x-access-token']
                 },
-                url: 'https://agrevid.com:3002/search/'+ req.params.search +'',
+                url: 'https://agrevid.com:3002/search/' + req.params.search + '',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -351,7 +351,7 @@ module.exports = function (app, express) {
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'x-access-token' : req.headers['x-access-token']
+                    'x-access-token': req.headers['x-access-token']
                 },
                 url: 'https://agrevid.com:3002/watchYoutubeVideo/' + req.params.url + '',
             }
@@ -369,7 +369,7 @@ module.exports = function (app, express) {
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'x-access-token' : req.headers['x-access-token']
+                    'x-access-token': req.headers['x-access-token']
                 },
                 url: 'https://agrevid.com:3002/watchVimeoVideo/' + req.params.url + '',
             }
@@ -413,6 +413,104 @@ module.exports = function (app, express) {
     })
 
 
+    /******************************************************************/
+    /*REQUETES POUR API VIDEO (apiPlaylist.js)*******************************************************/
+    api.post('/getPlaylist', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3003/getPlaylist',
+            form: {idUser: req.body.idUser}
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
+
+    api.post('/createPlaylist', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3003/createPlaylist',
+            form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist}
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
+
+    api.post('/deletePlaylist', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3003/deletePlaylist',
+            form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist}
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
+
+    api.post('/addVideoPlaylist', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3003/addVideoPlaylist',
+            form: {
+                idUser: req.body.idUser,
+                namePlaylist: req.body.namePlaylist,
+                url: req.body.url,
+                title : req.body.title,
+                source : req.body.source,
+                image : req.body.image
+            }
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
+
+    api.post('/deleteVideoPlaylist', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3003/deleteVideoPlaylist',
+            form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist, video: req.body.video}
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
     /******************************************************************/
 
     return api;
