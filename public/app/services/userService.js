@@ -8,6 +8,9 @@ angular.module('userService',[])
     }
 
 
+    userFactory.updateSecTel=function(userData){
+        return $http.post('/pilote/updateSecTel',userData);
+    }
 
     userFactory.all = function(){
         return $http.get('/pilote/users');

@@ -8,6 +8,28 @@ module.exports = function (app, express) {
 
     /*REQUETES POUR API USER (api.js)*******************************************************/
 
+
+    api.post('/updateSecTel', function (req, res) {
+        request.post({
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'x-access-token': req.headers['x-access-token']
+            },
+            url: 'https://agrevid.com:3001/updateSecTel',
+            form: {
+                tel : req.body.tel,
+                security : req.body.security
+            }
+        }, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            // console.log('body:', body); // Print the HTML for the Google homepage.
+            if (!error)
+                res.send(JSON.parse(response.body));
+            // console.log(response);
+        });
+    })
+
     api.post('/checkEmail', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
@@ -487,6 +509,9 @@ module.exports = function (app, express) {
             // console.log(response);
         });
     })
+
+
+
 
     api.post('/addVideoPlaylist', function (req, res) {
         request.post({

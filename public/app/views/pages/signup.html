@@ -12,6 +12,11 @@
                     <strong>Warning!  </strong>{{user.error}}
                 </div>
                 <h2>Inscription</h2>
+                <div  ng-if="user.showMessage()" class="alert alert-warning" style="margin-left:0% ;width: 360px;height: auto;">
+                    <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                        ×</button>
+                    <strong>Warning!  </strong>{{user.errorsignup}}
+                </div>
                 <form class="form-signin" method="post" ng-submit="user.signupUser()">
                     Nom : <input type="text" class="form-control" name="name" ng-model="user.userData.name" required>
                     Email : <input type="email" class="form-control" name="username" ng-model="user.userData.username"

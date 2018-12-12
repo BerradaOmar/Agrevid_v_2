@@ -139,6 +139,59 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sécurité</h3>
+                        <span class="pull-right clickable panel-collapsed"><i
+                                class="glyphicon glyphicon-chevron-down"></i></span>
+                    </div>
+                    <div class="panel-body" style="display: none">
+                        <!----------------------------------------------->
+                        <div id="demo">
+                            <div ng-controller="UserController as user">
+
+                                <div   ng-if="user.showMessage() && user.secUpdated()"class="alert alert-success">
+                                    <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <strong>Success!</strong> {{user.msg}}.
+
+                                </div>
+                                <div  ng-if="user.showMessage() && !user.secUpdated()" class="alert alert-warning">
+                                    <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <strong>Warning!</strong> {{user.msg}}.
+                                </div>
+
+                                <form method="post" ng-submit="user.updateSecTel()">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">Tel:</label>
+                                        <div class="panel-body">
+                                            <input type="tel"   class="form-control" placeholder="{{main.user.tel}}" name="tel" ng-model="user.userData.tel">
+
+                                            <b>Securiser mon compte avec mon numéro</b>
+
+                                            <input type="checkbox"  name="security" ng-model="user.userData.security">
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="col-sm-12">
+                                        <br/>
+                                        <button type="submit" class="col-sm-12 btn btn-danger btn-load"> valider
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!----------------------------------------------->
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row2">
             <div class="col-md-6">
@@ -190,6 +243,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

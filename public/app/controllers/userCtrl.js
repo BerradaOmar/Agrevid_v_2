@@ -13,6 +13,7 @@ angular.module('userCtrl', ['userService'])
         vm.throws = false;
         vm.updateTrue = false;
         vm.newInfo;
+        vm.secUpdatedSuccess=false;
         $scope.is_Admin = false;
         //pagination
         $scope.dataHistoriqueParam = [];
@@ -221,11 +222,36 @@ angular.module('userCtrl', ['userService'])
 
         };
 
+        vm.updateSecTel = function () {
+            User.updateSecTel(vm.userData).success(function (data) {
+                 vm.msg = data.message;
+                 vm.throws = true;
+                 vm.secUpdatedSuccess = data.success;
+
+
+            })
+        }
+
+        vm.secUpdated = function () {
+            return vm.secUpdatedSuccess;
+        }
+
     })
 
 
     .controller('UserCreateController', function (User, $location, $window,Auth) {
         let vm = this;
+         vm.errorsignup = '';
+         vm.throws =false;
+        //pour gerer l'affichage des notifications
+        vm.showMessage = function () {
+
+            return vm.throws;
+        }
+
+        vm.stopMessage = function () {
+            vm.throws = false;
+        }
 
         //pour gerer l'affichage des notifications
         vm.showMessage = function () {
@@ -310,10 +336,20 @@ angular.module('userCtrl', ['userService'])
                 User.create(vm.userData)
                     .then(function (response) {
                         vm.userData = {};
-                        vm.message = response.data.message;
 
-                        $window.localStorage.setItem('token', response.data.token);
-                        $location.path('/');
+                       if(response.data.success) {
+
+                           $window.localStorage.setItem('token', response.data.token);
+                           $location.path('/');
+
+                       }
+                       else {
+
+                           vm.errorsignup = 'email déja utilisé par un autre utilisateur!';
+                           vm.throws=true;
+
+
+                       }
                     })
             })
 
