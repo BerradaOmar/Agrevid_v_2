@@ -1,6 +1,6 @@
 angular.module('userCtrl', ['userService'])
 
-    .controller('UserController', function (User, Auth, $location, $window, $scope, $routeParams) {
+    .controller('UserController', function (User, Auth, AuthToken, $location, $window, $scope, $routeParams, $timeout) {
         let vm = this;
         vm.isUpdate = false;
         vm.historys = [];
@@ -8,6 +8,11 @@ angular.module('userCtrl', ['userService'])
         vm.userSuccessfllyAdded = false;
         vm.successDelete = false;
         vm.HistorySearch = [];
+        vm.OldPass = false;
+        vm.msg;
+        vm.throws = false;
+        vm.updateTrue = false;
+        vm.newInfo;
         $scope.is_Admin = false;
         //pagination
         $scope.dataHistoriqueParam = [];
@@ -30,13 +35,18 @@ angular.module('userCtrl', ['userService'])
                 vm.users = data;
             })
 
-        vm.hasSecurity = function(){
-            if($scope.hasSecurity==1) return true;
+        vm.hasSecurity = function () {
+            if ($scope.hasSecurity == 1) return true;
             else return false;
         }
 
         vm.getUser = function () {
             User.user(vm.userData).success(function (data) {
+                if(data.length === 0)
+                {
+                    vm.msg = "Utilisateur introuvable";
+                    vm.throws = true;
+                }
                 vm.userSearched = data;
                 $scope.is_Admin = vm.userSearched.admin;
                 vm.successDelete = false;
@@ -98,34 +108,75 @@ angular.module('userCtrl', ['userService'])
             });
 
         vm.deleteUser = function () {
-            User.delete(vm.userData).success(function () {
-                console.log('User deleted !');
+            User.delete(vm.userData).success(function (resp) {
+                vm.successDelete = resp.success;
             });
 
         };
+
+
+        //pour gerer l'affichage des notifications
+        vm.showMessage = function () {
+
+            return vm.throws;
+        }
+
+        vm.stopMessage = function () {
+            vm.throws = false;
+        }
+
+        //time
+        $scope.time = 0;
+        $scope.timeSeconde = 0;
+
+        //timer callback
+        var timer = function () {
+            if ($scope.time < 5000) {
+                $scope.time += 1000;
+                $scope.timeSeconde += 1;
+                $timeout(timer, 1000);
+            }
+        }
 
 
         vm.updateUser = function () {
-            User.update(vm.userData).success(function () {
-
+            $timeout(function () {
                 $window.localStorage.setItem('token', '');
                 $location.path('/login');
-                $window.alert("votre compte a bien été modifier clicker ok pour se connecter");
+            }, 5000);
 
+            User.update(vm.userData).success(function (message) {
 
-            });
+                vm.updateTrue = message.success;
+                vm.msg = message.message;
+                vm.throws = true;
 
+                //run!!
+                $timeout(timer, 1000);
 
+            })
         };
+
+        vm.updateUserSucced = function () {
+            return vm.updateTrue;
+        }
+
+
 
         vm.updateUserPass = function () {
-            User.updateUserPass(vm.userData).success(function () {
-
+            User.updateUserPass(vm.userData).success(function (message) {
+                vm.oldPass = message.success;
+                vm.msg = message.message;
+                vm.throws = true;
                 $window.localStorage.setItem('token', '');
                 $location.path('/login');
-                $window.alert("votre compte a bien été modifié. Appuiyez sur 'OK' pour se connecter.");
             });
         };
+
+
+        vm.isOldPassTrue = function () {
+            return vm.oldPass;
+        }
 
         vm.updateUserPassToken = function () {
 
@@ -135,9 +186,7 @@ angular.module('userCtrl', ['userService'])
                 $window.localStorage.setItem('token', '');
 
                 $location.path('/login');
-                $window.alert("votre compte a bien été modifier clicker ok pour se connecter");
-
-
+                $window.alert("votre compte a bien été modifié. Appuyez sur ok pour vous connectez.");
             });
 
         };

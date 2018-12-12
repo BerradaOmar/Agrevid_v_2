@@ -76,6 +76,7 @@ function createToken(user) {
     }, secretKey, {
         //Le temps (ici 1h) où l'utilisateur peut rester connecté avant de devoir se reconnecter
         expiresIn: 3600
+        // expiresIn: 20
     });
 
     return token;
@@ -97,7 +98,6 @@ function createTokenforUpdatePass(user, codeVerification) {
 
     return token;
 }
-
 
 
 api.post('/checkEmail', function (req, res) {
@@ -219,9 +219,9 @@ api.post('/signup', function (req, res) {
 
     let token = createToken(user);
 
-    if(user.tel=="") {
-        user.tel="-";
-        user.useMyNumForSec=false;
+    if (user.tel == "") {
+        user.tel = "-";
+        user.useMyNumForSec = false;
     }
 
     user.save(function (err) {
@@ -243,11 +243,11 @@ api.post('/login', function (req, res) {
     }).select('_id name username password admin').exec(function (err, user) {
         if (err) throw err;
         if (!user) {
-            res.send({message: "L'utilisateur n'existe pas !"});
+            res.send({message: "Email ou mot de passe incorrecte !"});
         } else if (user) {
             let validPassword = user.comparePassword(req.body.password);
             if (!validPassword) {
-                res.send({message: "Mot de passe incorrecte !"});
+                res.send({message: "Email ou mot de passe incorrecte !"});
             } else {
                 //Create a token for the login
                 let token = createToken(user);
@@ -287,6 +287,20 @@ api.post('/logoutDate', function (req, res) {
 });
 
 
+api.get('/isTokenValid/:token', function (req, res) {
+    let token = req.params.token;
+    //check if token exist
+    jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+        if (err) {
+            res.json({valid: false});
+        } else {
+            //all the info of user is down here after authentication
+            res.json({valid: true});
+        }
+    });
+
+})
+
 /*UP : destination A*/
 /*DOWN : destination B*/
 //position of this middlware in the code is important !
@@ -309,6 +323,7 @@ api.use(function (req, res, next) {
         res.status(403).send({success: false, message: "No token provided"});
     }
 });
+
 
 //Destination B here !
 
@@ -499,30 +514,66 @@ api.post('/deleteUser', function (req, res) {
         if (err)
             console.log(err);
         else
-            res.json({message: 'User deleted'});
+            res.json({message: 'Utilisateur supprimé', success: true});
     });
 });
 
-api.post('/updateUser', function (req, res) {
-    //quand l utilisateur change son email il faut affecter le changement dans tout les bases de données ou collections
+api.post('/updateUser', function (req, res, next) {
     let myquery = {_id: req.decoded.id};
-    let newvalues = {$set: {name: req.body.name, username: req.body.email}};
-    User.updateOne(myquery, newvalues, function (err) {
-        if (err)
-            console.log(err);
-        else
-            res.json({message: 'User has been modified'});
-    });
-    let myquery2 = {username: req.decoded.username};
-    let newvalues2 = {$set: {username: req.body.email}};
-    UserHistory.updateMany(myquery2, newvalues2);
+    let newvalues;
+    let successReturn = false;
+    let msg;
+    let newEmail;
+    let newName;
 
-    let myquery3 = {username: req.decoded.username};
-    let newvalues3 = {$set: {username: req.body.email}};
-    UserLog.updateMany(myquery3, newvalues3);
+    console.log(msg + ">>>>>>>>>>>>>>>>>>");
+    if ((req.body.name + "" === 'undefined') && (req.body.email + "" === 'undefined')) {
+        msg = "Aucune modification n'as été prise en charge, veuillez renseigner les champs demandés.";
+        successReturn = false;
+
+    }
+    else if (req.body.name + "" !== 'undefined' && req.body.email + "" === 'undefined') {
+        newvalues = {$set: {name: req.body.name}};
+        msg = "Votre nom est bien modifié";
+        successReturn = true;
+
+
+    }
+
+    else if (req.body.name + "" === 'undefined' && req.body.email + "" !== 'undefined') {
+        newvalues = {$set: {username: req.body.email}};
+        msg = "Votre email est bien modifié";
+        successReturn = true;
+
+
+    }
+    else if (req.body.name + "" !== 'undefined' && req.body.email + "" !== 'undefined') {
+        newvalues = {$set: {name: req.body.name, username: req.body.email}};
+        msg = "Votre email et nom sont bien modifiés";
+        successReturn = true;
+
+
+    }
+
+
+    if (successReturn) {
+        User.updateOne(myquery, newvalues, function (err) {
+            if (err)
+                console.log(err);
+
+
+            else {
+
+                res.json({message: msg, success: true});
+
+            }
+
+
+        })
+    } else res.json({message: msg, success: false});
+
 
 });
-
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 api.post('/updateUserPass', function (req, res) {
     User.findOne({
@@ -531,12 +582,12 @@ api.post('/updateUserPass', function (req, res) {
         if (err) res.send({message: "err select"});
 
         if (!user) {
-            res.json({message: "L'utilisateur n'existe pas !"});
-
+            res.json({message: "L'utilisateur n'existe pas !",
+                success:false});
         } else if (user) {
             let validPassword = user.comparePassword(req.body.passwordOld);
             if (!validPassword) {
-                res.json({message: "Mot de passe incorrecte !"});
+                res.json({message: "Ancien mot de passe incorrecte !",success:false});
 
             } else {
                 // create the new pass
@@ -551,7 +602,8 @@ api.post('/updateUserPass', function (req, res) {
                         console.log(err);
                     else
                         res.json({
-                            message: "created new pass !",
+                            message: "Votre mot de passe a bien été modifié !",
+                            success:true
                         });
                 })
 

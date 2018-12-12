@@ -24,9 +24,9 @@ angular.module('appRoutes',['ngRoute'])
             templateUrl: 'app/views/pages/playlist.html'
         })
 
-        .when('/logout',{
-            templateUrl: 'app/views/pages/logout.html'
-        })
+        /*.when('/logout',{
+            templateUrl: 'app/views/pages/home.html'
+        })*/
 
        /* .when('/video',{
             templateUrl: 'app/views/pages/videoStream.html'

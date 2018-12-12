@@ -43,7 +43,7 @@ angular.module('playlistCtrl', ['playlistService'])
                 $scope.arrayNomPlaylist = [];
 
                 Playlist.get(vm.userId).then(function (res) {
-                    console.log('Playlist recuperer ');
+                    // console.log('Playlist recuperer ');
 
                     angular.forEach((res.data), function (element) {
                         $scope.array.push(element);
@@ -116,11 +116,11 @@ angular.module('playlistCtrl', ['playlistService'])
                 vm.getListPlaylist();
                 $scope.selectedPlaylist = [];
                 for(let i=0; i<$scope.array.length;i++){
-                    console.log($scope.array[i]);
+                    // console.log($scope.array[i]);
                     if($scope.array[i].namePlaylist === playlist.namePlaylist){
-                        console.log("here1 :"+$scope.selectedPlaylist);
+                        // console.log("here1 :"+$scope.selectedPlaylist);
                         $scope.selectedPlaylist = $scope.array[i];
-                        console.log("here2 :"+$scope.selectedPlaylist.playlist);
+                        // console.log("here2 :"+$scope.selectedPlaylist.playlist);
                     }
                 }
 
@@ -163,7 +163,7 @@ angular.module('playlistCtrl', ['playlistService'])
             $scope.selectedPlaylist = [];
             $scope.selectedVideo = '';
                 for(let i=0; i<$scope.array.length;i++){
-                    console.log($scope.array[i]);
+                    // console.log($scope.array[i]);
                     if($scope.array[i].namePlaylist === playlist.namePlaylist)
                         $scope.selectedPlaylist = $scope.array[i];
                 }

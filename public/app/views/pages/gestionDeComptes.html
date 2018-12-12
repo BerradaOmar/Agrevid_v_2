@@ -20,6 +20,17 @@
                                 <div class="row">
                                     <div class="col-sm-12">
 
+                                        <div  id="successPass" ng-if="user.isOldPassTrue() && user.showMessage()"class="alert alert-success">
+                                            <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <strong>Success!</strong> {{user.msg}}.
+                                        </div>
+                                        <div  ng-if="!user.isOldPassTrue() &&  user.showMessage()" class="alert alert-warning">
+                                            <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <strong>Warning!</strong> {{user.msg}}.
+                                        </div>
+
                                         <br/>
                                         <form method="post" ng-submit="user.updateUserPass()">
                                             <input type="password" class="form-control" name="password0" id="password0"
@@ -78,15 +89,24 @@
                         <div id="demo">
                             <div ng-controller="UserController as user">
 
-                                <p ng-if="user.isUpdate"> votre compte a bien été modifier </p>
+                                <div   ng-if="user.updateUserSucced() && user.showMessage()"class="alert alert-success">
+                                    <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <strong>Success!</strong> {{user.msg}}.
+                                    vous allez être redirigé à la page login dans 5 sec : {{timeSeconde}}
+                                </div>
+                                <div  ng-if="!user.updateUserSucced() &&  user.showMessage()" class="alert alert-warning">
+                                    <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <strong>Warning!</strong> {{user.msg}}.
+                                </div>
 
                                 <form method="post" ng-submit="user.updateUser()">
                                     <div class="form-group">
                                         <label class="control-label col-sm-2">Nom:</label>
                                         <div class="col-sm-12">
                                             <input type="text" class="form-control" id="nom" name="nom"
-                                                   placeholder="{{main.user.name}}" ng-model="user.userData.name"
-                                                   required>
+                                                   placeholder="{{main.user.name}}" ng-model="user.userData.name">
                                             <br/>
                                         </div>
                                     </div>
@@ -95,8 +115,7 @@
                                         <label class="control-label col-sm-2">Email:</label>
                                         <div class="col-sm-12">
                                             <input type="email" class="form-control" id="email" name="email"
-                                                   placeholder={{main.user.username}} ng-model="user.userData.email"
-                                                   required>
+                                                   placeholder={{main.user.username}} ng-model="user.userData.email">
                                         </div>
                                     </div>
                                     <div class="col-sm-12">

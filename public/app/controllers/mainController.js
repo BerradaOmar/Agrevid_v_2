@@ -10,17 +10,32 @@ angular.module('mainCtrl', [])
         vm.message;
         vm.succed;
         vm.submitSendPass = false;
+        vm.throws = false;
+
 
         $rootScope.$on('$routeChangeStart', function () {
-            vm.loggedIn = Auth.isLoggedIn();
+            Auth.isLoggedIn().then(function (res) {
+                vm.loggedIn = res.data.valid;
+                if (res.data.valid === false) {
+                    vm.doLogout();
+                }
+            })
             Auth.getUser()
                 .then(function (data) {
                     vm.user = data.data;
-                    //here the prob
                     vm.isAdmin = data.data.admin;
                 });
         });
 
+
+        //pour gerer l'affichage des notifications
+        vm.showMessage = function () {
+            return vm.throws;
+        }
+
+        vm.stopMessage = function () {
+            vm.throws = false;
+        }
 
         vm.doLogin = function () {
             vm.processing = true;
@@ -35,14 +50,17 @@ angular.module('mainCtrl', [])
 
                     if (vm.loginData.username != "agrevid@gmail.com") {
                         if (!response.checked) {
-                            $window.alert("Email invalide !");
+                            vm.error="Email ou mot de passe incorrecte !";
+                            vm.throws=true;
                             falseSubmitNb++;
                             return;
                         }
 
 
                         if (vm.loginData.password.length < 8) {
-                            $window.alert("Mot de passe incorrecte !");
+                            // $window.alert("Mot de passe incorrecte !");
+                            vm.error="Email ou mot de passe incorrecte !";
+                            vm.throws=true;
                             falseSubmitNb++;
                             return;
                         }
@@ -51,12 +69,14 @@ angular.module('mainCtrl', [])
                     for (let i = 0; i < charInterdits.length; i++) {
                         if (vm.loginData.password.includes(charInterdits[i])) {
                             if (charInterdits[i] == " ") {
-                                $window.alert("Mot de passe incorrecte !");
+                                vm.error="Email ou mot de passe incorrecte !";
+                                vm.throws=true;
                                 falseSubmitNb++;
                                 return;
                             }
 
-                            $window.alert("Mot de passe incorrecte !");
+                            vm.error="Email ou mot de passe incorrecte !";
+                            vm.throws=true;
                             falseSubmitNb++;
                             return;
                         }
@@ -72,7 +92,8 @@ angular.module('mainCtrl', [])
                     }
 
                     if (majCheck == false) {
-                        $window.alert("Mot de passe incorrecte !");
+                        vm.error="Email ou mot de passe incorrecte !";
+                        vm.throws=true;
                         falseSubmitNb++;
                         return;
                     }
@@ -91,13 +112,15 @@ angular.module('mainCtrl', [])
                                 $location.path('/');
                             else {
                                 vm.error = data.message;
-                                $window.alert(vm.error);
+                                vm.throws=true;
                             }
                         });
 
                 });
             } else {
-                $window.alert('Vous avez atteint le nombre maximum de tentatives.');
+                vm.error="Vous avez atteint le nombre maximum de tentatives.\n";
+                vm.throws=true;
+                // $window.alert('Vous avez atteint le nombre maximum de tentatives.');
             }
         }
 
@@ -106,10 +129,11 @@ angular.module('mainCtrl', [])
             Auth.logout(vm.user).success(function (res) {
                 let response = res;
 
-                console.log(response.message);
                 vm.isAdmin = false;
                 $window.localStorage.setItem('token', '');
                 $location.path('/logout');
+                vm.error="Vous êtes bien déconnecté.";
+                vm.throws=true;
 
             });
 

@@ -110,6 +110,25 @@ module.exports = function (app, express) {
             });
     })
 
+    api.get('/isTokenValid/:token', function (req, res) {
+        let token = req.params.token;
+        request.get(
+            {
+                url: 'https://agrevid.com:3001/isTokenValid/'+token+'',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'x-access-token': req.headers['x-access-token']
+                }
+            }
+            , function (error, response, body) {
+                console.log('error:', error); // Print the error if one occurred
+                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                // console.log('body:', body); // Print the HTML for the Google homepage.
+                if (!error)
+                    res.send(JSON.parse(response.body));
+            });
+    })
+
     api.post('/userhistorysParam', function (req, res) {
         request.post({
             headers: {

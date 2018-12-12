@@ -1,7 +1,7 @@
 angular.module('videoCtrl', ['videoService'])
 
 
-    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route,$document) {
+    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route,$http,$q) {
         let vm = this;
         vm.url = '';
         vm.title = '\xa0\xa0\xa0';
@@ -61,6 +61,7 @@ angular.module('videoCtrl', ['videoService'])
             vm.title = video.title;
             vm.videoSrc = 'youtube';
             vm.image = video.raw.snippet.thumbnails.medium.url;
+
             // $location.path('/video');
             // $route.reload();
         }
@@ -73,7 +74,6 @@ angular.module('videoCtrl', ['videoService'])
             // $location.path('/videoVimeo');
             // $route.reload();
         }
-
 
 
     })

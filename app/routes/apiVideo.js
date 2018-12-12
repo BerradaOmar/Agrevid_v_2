@@ -120,12 +120,8 @@ api.get('/searchVimeoVideos/:search', function (req, res) {
     })
 })
 
-let stream = '' ;
 /*méthode qui stream la video de youtube*/
 api.get('/watchYoutubeVideo/:url', function (req, res) {
-    /*if(stream !== ''){
-        stream.end();
-    }*/
     let url = req.params.url;
     stream = ytdl('https://www.youtube.com/watch?v=' + url);
 

@@ -1,7 +1,7 @@
 angular.module('authService', [])
 
 
-    .factory('Auth', function ($http, $q, AuthToken) {
+    .factory('Auth', function ($http, $q, AuthToken,$window) {
 
         let authFactory = {};
 
@@ -21,12 +21,12 @@ angular.module('authService', [])
             return $http.post('/pilote/logoutDate', user);
         }
 
+
+
+
         authFactory.isLoggedIn = function () {
-            if (AuthToken.getToken()) {
-                return true;
-            } else {
-                return false;
-            }
+                let token = AuthToken.getToken();
+                return $http.get('/pilote/isTokenValid/'+token+'');
         }
 
         authFactory.userSendModifyPass = function (data) {
@@ -34,8 +34,9 @@ angular.module('authService', [])
         }
 
         authFactory.getUser = function () {
-            if (AuthToken.getToken())
+            if (AuthToken.getToken()){
                 return $http.get('/pilote/me');
+            }
             else
                 return $q.reject({message: "User has no token"});
         }
@@ -44,7 +45,7 @@ angular.module('authService', [])
     })
 
 
-    .factory('AuthToken', function ($window,$routeParams) {
+    .factory('AuthToken', function ($window,$routeParams,$injector) {
         let authTokenFactory = {};
 
         authTokenFactory.getToken = function () {
@@ -62,10 +63,12 @@ angular.module('authService', [])
             else
                 $window.localStorage.removeItem('token');
         }
+
+
         return authTokenFactory;
     })
 
-    .factory('AuthInterceptor', function ($q, $location, $window, AuthToken) {
+    .factory('AuthInterceptor', function ($q, $location, $window, AuthToken,$injector) {
         let interceptorFactory = {};
 
         interceptorFactory.request = function (config) {

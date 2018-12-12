@@ -2,6 +2,7 @@
     <script type="text/javascript" src="app/res/pass.js"></script>
 
 
+
     <div class="container" style="width: 40%">
         <div class="row">
             <div id="custom-search-input">
@@ -10,16 +11,23 @@
                         <input type="text" class="  search-query form-control" placeholder="Search"
                                ng-model="user.userData.username"/>
                     </form>
+
                     <span class="input-group-btn">
                                     <button class="btn btn-danger" type="button" ng-click="user.getUser()">
                                         <span class=" glyphicon glyphicon-search"></span>
                                     </button>
                                 </span>
+
                 </div>
             </div>
         </div>
     </div>
 
+    <div  ng-if="user.showMessage()" class="alert alert-warning" style="margin-left:35% ;width: 400px;height: auto;">
+        <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+            ×</button>
+        <strong>Warning!</strong> {{user.msg}}.
+    </div>
 
     </br></br>
 
