@@ -194,17 +194,28 @@ a {
     padding-bottom: auto;
     background-color: #FFE4E1;
     overflow-y: hidden;
+
+}
+
+div#parent {
+    width:500px;
+    padding:20px;
+}
+
+div#content {
+    width:auto;
+    padding:20px;
+    overflow-x:auto;
 }
 
 .vid-list {
-    width: 900px;
+    width: 2000px;
     position: relative;
     top:0;
     left: 0;
 }
 
 .vid-item {
-    display: block;
     width: 148px;
     height: auto;
     float: left;

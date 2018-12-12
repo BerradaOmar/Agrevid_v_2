@@ -11,13 +11,43 @@ angular.module('playlistCtrl', ['playlistService'])
         vm.playlistData = {};
 
 
+        //pour gerer l'affichage des notifications
+        vm.showMessage = function () {
+            return vm.throws;
+        }
+
+        vm.stopMessage = function () {
+            vm.throws = false;
+        }
+
         vm.createUserPlaylist = function () {
             vm.message = '';
-            let charInterdits = ["\""];
+            let charInterdits = ["\"", " "];
+
+            for(let i =0; i<$scope.arrayNomPlaylist.length;i++){
+                if($scope.arrayNomPlaylist[i] === vm.playlistData.namePlaylist){
+                    vm.error='La playlist existe déjà !';
+                    vm.throws=true;
+                    return;
+                }
+            }
+
+            if(Auth.checkInput(vm.playlistData.namePlaylist)){
+                vm.error='Le non de la playlist ne peut pas contenir de "$" ';
+                vm.throws=true;
+                return;
+            }
 
             for (let i = 0; i < charInterdits.length; i++) {
                 if (vm.playlistData.namePlaylist.includes(charInterdits[i])) {
-                    $window.alert("Le nom de la playlist ne peut pas contenir de " + charInterdits[i]);
+                    if(charInterdits[i] === " "){
+                        vm.error="Le nom de la playlist ne peut pas contenir d'espace !";
+                        vm.throws=true;
+                        return;
+                    }
+                    vm.error="Le nom de la playlist ne peut pas contenir de " + charInterdits[i];
+                    vm.throws=true;
+                    // $window.alert();
                     return;
                 }
             }
@@ -89,12 +119,30 @@ angular.module('playlistCtrl', ['playlistService'])
         };
 
         vm.addVideo = function (playlist, url,title,source,image) {
+            console.log('playlist : '+playlist);
+            if(!playlist){
+                vm.error='Aucune playlist sélectionnée !';
+                vm.throws=true;
+                vm.messageSuccess = false;
+                return;
+            }
+
+            if(!url){
+                vm.error='Aucune video sélectionnée !';
+                vm.throws=true;
+                vm.messageSuccess = false;
+                return;
+            }
             Auth.getUser().then(function (response) {
                 vm.userId = response.data.id;
                 Playlist.addVideo(vm.userId, playlist, url,title,source,image).success(function () {
                     vm.getListPlaylist();
+                    vm.error='La video est ajoutée dans la nouvelle playlist : '+playlist;
+                    vm.throws=true;
+                    vm.messageSuccess = true;
                 });
             });
+
         };
 
         vm.deleteVideo = function (playlist, video) {
@@ -142,9 +190,46 @@ angular.module('playlistCtrl', ['playlistService'])
                     $window.alert('video ajouter à la playlist '+ playlist);
                 });
             });*/
+
+
+            if(!url){
+                vm.error='Aucune video sélectionnée !';
+                vm.throws=true;
+                vm.messageSuccess = false;
+                return;
+            }
+
+            if(playlist){
+                if(Auth.checkInput(playlist)){
+                    vm.error='Le champ de saisie ne peut pas contenir de "$" ';
+                    vm.throws=true;
+                    vm.messageSuccess = false;
+                    return;
+                }
+
+                for(let i =0; i<$scope.arrayNomPlaylist.length;i++){
+                    if($scope.arrayNomPlaylist[i] === playlist){
+                        vm.error='La playlist existe déjà !';
+                        vm.throws=true;
+                        vm.messageSuccess = false;
+                        return;
+                    }
+                }
+
+            }else{
+                vm.error='Aucune playlist sélectionnée !';
+                vm.throws=true;
+                vm.messageSuccess = false;
+                return;
+            }
+
+
             vm.playlistData.namePlaylist = playlist;
             vm.createUserPlaylist();
             vm.addVideo(playlist, url,title,source,image);
+            vm.error='La video est ajoutée dans la nouvelle playlist : '+playlist;
+            vm.throws=true;
+            vm.messageSuccess = true;
         };
 
         vm.goToVideoPlaylist = function (playlist, video) {

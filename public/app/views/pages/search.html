@@ -35,6 +35,17 @@
                                 <div class="modal-content" style="width:70%" >
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <div class="modal-header">
+                                        <div  ng-if="playlist.showMessage() && !playlist.messageSuccess" class="alert alert-warning" style="margin-left:0% ;width: 360px;height: auto;">
+                                            <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <strong>Warning!  </strong>{{playlist.error}}
+                                        </div>
+
+                                        <div  ng-if="playlist.showMessage() && playlist.messageSuccess" class="alert alert-success" style="margin-left:0% ;width: 360px;height: auto;">
+                                            <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <strong>Success!  </strong>{{playlist.error}}
+                                        </div>
 
                                         <h4 class="modal-title">Playlist</h4>
                                     </div>

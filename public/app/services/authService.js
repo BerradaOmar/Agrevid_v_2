@@ -41,6 +41,15 @@ angular.module('authService', [])
                 return $q.reject({message: "User has no token"});
         }
 
+
+        authFactory.checkInput = function (data){
+            if(data.includes('$')){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
         return authFactory;
     })
 

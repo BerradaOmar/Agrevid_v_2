@@ -25,6 +25,7 @@
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
     "twilio": "^3.24.0",
+    "validator": "^10.9.0",
     "vimeo": "^2.1.0",
     "vimeo-downloader": "^1.0.4",
     "youtube-dl": "^1.12.2",

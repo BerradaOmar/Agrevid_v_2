@@ -43,6 +43,11 @@
                         <div class="modal-body ">
                             <div class="input-group container">
                                 <div class="text-left">
+                                    <div  ng-if="playlist.showMessage()" class="alert alert-warning" style="margin-left:0% ;width: 360px;height: auto;">
+                                        <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>
+                                        <strong>Warning!  </strong>{{playlist.error}}
+                                    </div>
                                     <form class="form-signin" method="post" ng-submit="playlist.createUserPlaylist()">
                                         new playlist : <input type="text" name="namePlaylist"
                                                               ng-model="playlist.playlistData.namePlaylist">

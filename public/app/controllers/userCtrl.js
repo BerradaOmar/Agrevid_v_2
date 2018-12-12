@@ -139,6 +139,30 @@ angular.module('userCtrl', ['userService'])
 
 
         vm.updateUser = function () {
+            if(vm.userData.name){
+                if(Auth.checkInput(vm.userData.name)){
+                    vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
+                    vm.throws=true;
+                    return;
+                }
+            }
+            if(vm.userData.email){
+                if(Auth.checkInput(vm.userData.email)){
+                    vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
+                    vm.throws=true;
+                    return;
+                }
+            }
+
+            if(vm.userData.password){
+                if(Auth.checkInput(vm.userData.password)){
+                    vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
+                    vm.throws=true;
+                    return;
+                }
+            }
+
+
             $timeout(function () {
                 if (vm.updateTrue) {
                     $window.localStorage.setItem('token', '');
@@ -164,6 +188,12 @@ angular.module('userCtrl', ['userService'])
 
 
         vm.updateUserPass = function () {
+            if(Auth.checkInput(vm.userData.passwordOld) || Auth.checkInput(vm.userData.passwordNew)){
+                vm.msg='Le champ de saisie ne peut pas contenir "$" ';
+                vm.throws=true;
+                return;
+            }
+
             User.updateUserPass(vm.userData).success(function (message) {
                 vm.oldPass = message.success;
                 vm.msg = message.message;
@@ -194,8 +224,19 @@ angular.module('userCtrl', ['userService'])
     })
 
 
-    .controller('UserCreateController', function (User, $location, $window) {
+    .controller('UserCreateController', function (User, $location, $window,Auth) {
         let vm = this;
+
+        //pour gerer l'affichage des notifications
+        vm.showMessage = function () {
+
+            return vm.throws;
+        }
+
+        vm.stopMessage = function () {
+            vm.throws = false;
+        }
+
 
         vm.isUserSuccessfullyAdded = function () {
 
@@ -208,6 +249,13 @@ angular.module('userCtrl', ['userService'])
 
         vm.signupUser = function () {
             vm.message = '';
+
+            if(Auth.checkInput(vm.userData.name) || Auth.checkInput(vm.userData.username) || Auth.checkInput(vm.userData.tel) || Auth.checkInput(vm.userData.password)){
+                console.log('injection detected');
+                vm.error='Le champ de saisie ne peut pas contenir de "$" ';
+                vm.throws=true;
+                return;
+            }
 
             User.checkEmail(vm.userData).success(function (res) {
                 let response = res;
