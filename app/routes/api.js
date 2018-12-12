@@ -522,55 +522,75 @@ api.post('/updateUser', function (req, res, next) {
     let myquery = {_id: req.decoded.id};
     let newvalues;
     let successReturn = false;
+    let mdpValid = true;
     let msg;
     let newEmail;
     let newName;
-
-    console.log(msg + ">>>>>>>>>>>>>>>>>>");
-    if ((req.body.name + "" === 'undefined') && (req.body.email + "" === 'undefined')) {
-        msg = "Aucune modification n'as été prise en charge, veuillez renseigner les champs demandés.";
-        successReturn = false;
-
-    }
-    else if (req.body.name + "" !== 'undefined' && req.body.email + "" === 'undefined') {
-        newvalues = {$set: {name: req.body.name}};
-        msg = "Votre nom est bien modifié";
-        successReturn = true;
-
-
-    }
-
-    else if (req.body.name + "" === 'undefined' && req.body.email + "" !== 'undefined') {
-        newvalues = {$set: {username: req.body.email}};
-        msg = "Votre email est bien modifié";
-        successReturn = true;
-
-
-    }
-    else if (req.body.name + "" !== 'undefined' && req.body.email + "" !== 'undefined') {
-        newvalues = {$set: {name: req.body.name, username: req.body.email}};
-        msg = "Votre email et nom sont bien modifiés";
-        successReturn = true;
-
-
-    }
-
-
-    if (successReturn) {
-        User.updateOne(myquery, newvalues, function (err) {
-            if (err)
-                console.log(err);
-
-
-            else {
-
-                res.json({message: msg, success: true});
-
+    User.findOne({username: req.decoded.username}).select('password').exec(function (err, user) {
+        if(!err) {
+            let validPassword = user.comparePassword(req.body.password);
+            if (!validPassword) {
+                msg = "Mot de passe incorrecte !";
+                mdpValid = false;
             }
 
+            /****************/
+            console.log(mdpValid);
+            if (mdpValid === true) {
 
-        })
-    } else res.json({message: msg, success: false});
+
+                console.log(msg + ">>>>>>>>>>>>>>>>>>");
+                if ((req.body.name + "" === 'undefined') && (req.body.email + "" === 'undefined')) {
+                    msg = "Aucune modification n'as été prise en charge, veuillez renseigner les champs demandés.";
+                    successReturn = false;
+
+                }
+                else if (req.body.name + "" !== 'undefined' && req.body.email + "" === 'undefined') {
+                    newvalues = {$set: {name: req.body.name}};
+                    msg = "Votre nom est bien modifié";
+                    successReturn = true;
+
+
+                }
+
+                else if (req.body.name + "" === 'undefined' && req.body.email + "" !== 'undefined') {
+                    newvalues = {$set: {username: req.body.email}};
+                    msg = "Votre email est bien modifié";
+                    successReturn = true;
+
+
+                }
+                else if (req.body.name + "" !== 'undefined' && req.body.email + "" !== 'undefined') {
+                    newvalues = {$set: {name: req.body.name, username: req.body.email}};
+                    msg = "Votre email et nom sont bien modifiés";
+                    successReturn = true;
+
+
+                }
+            }
+
+            if (successReturn) {
+                User.updateOne(myquery, newvalues, function (err) {
+                    if (err)
+                        console.log(err);
+
+
+                    else {
+
+                        res.json({message: msg, success: true});
+
+                    }
+
+
+                })
+            } else res.json({message: msg, success: false});
+
+
+            /****************/
+
+        }
+    })
+
 
 
 });
@@ -582,12 +602,14 @@ api.post('/updateUserPass', function (req, res) {
         if (err) res.send({message: "err select"});
 
         if (!user) {
-            res.json({message: "L'utilisateur n'existe pas !",
-                success:false});
+            res.json({
+                message: "L'utilisateur n'existe pas !",
+                success: false
+            });
         } else if (user) {
             let validPassword = user.comparePassword(req.body.passwordOld);
             if (!validPassword) {
-                res.json({message: "Ancien mot de passe incorrecte !",success:false});
+                res.json({message: "Ancien mot de passe incorrecte !", success: false});
 
             } else {
                 // create the new pass
@@ -603,7 +625,7 @@ api.post('/updateUserPass', function (req, res) {
                     else
                         res.json({
                             message: "Votre mot de passe a bien été modifié !",
-                            success:true
+                            success: true
                         });
                 })
 

@@ -264,7 +264,7 @@ module.exports = function (app, express) {
                 'x-access-token': req.headers['x-access-token']
             },
             url: 'https://agrevid.com:3001/updateUser',
-            form: {name: req.body.name, email: req.body.email}
+            form: {name: req.body.name, email: req.body.email, password : req.body.password}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received

@@ -42,8 +42,7 @@ angular.module('userCtrl', ['userService'])
 
         vm.getUser = function () {
             User.user(vm.userData).success(function (data) {
-                if(data.length === 0)
-                {
+                if (data.length === 0) {
                     vm.msg = "Utilisateur introuvable";
                     vm.throws = true;
                 }
@@ -141,8 +140,10 @@ angular.module('userCtrl', ['userService'])
 
         vm.updateUser = function () {
             $timeout(function () {
-                $window.localStorage.setItem('token', '');
-                $location.path('/login');
+                if (vm.updateTrue) {
+                    $window.localStorage.setItem('token', '');
+                    $location.path('/login');
+                }
             }, 5000);
 
             User.update(vm.userData).success(function (message) {
@@ -160,7 +161,6 @@ angular.module('userCtrl', ['userService'])
         vm.updateUserSucced = function () {
             return vm.updateTrue;
         }
-
 
 
         vm.updateUserPass = function () {
