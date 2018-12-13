@@ -218,12 +218,12 @@ api.post('/signup', function (req, res) {
     });
 
     let token = createToken(user);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+user.tel);
-    if (user.tel+""  === 'undefined') {
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + user.tel);
+    if (user.tel + "" === 'undefined') {
         user.tel = "-";
         user.useMyNumForSec = false;
     }
-     let succedSave=false;
+    let succedSave = false;
     user.save(function (err) {
         if (err) {
             res.json({success: false, token: ''});
@@ -235,7 +235,6 @@ api.post('/signup', function (req, res) {
     });
 
 });
-
 
 
 api.post('/login', function (req, res) {
@@ -528,7 +527,7 @@ api.post('/updateUser', function (req, res, next) {
     let newEmail;
     let newName;
     User.findOne({username: req.decoded.username}).select('password').exec(function (err, user) {
-        if(!err) {
+        if (!err) {
             let validPassword = user.comparePassword(req.body.password);
             if (!validPassword) {
                 msg = "Mot de passe incorrecte !";
@@ -594,62 +593,66 @@ api.post('/updateUser', function (req, res, next) {
     })
 
 
-
 });
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
 
-api.post('/updateSecTel',function (req,res) {
+api.post('/updateSecTel', function (req, res) {
 
 
-    let numTel="";
+    let numTel = "";
     let myquery = {_id: req.decoded.id};
     let newvalues;
-    let sec= false;
+    let sec = false;
     let secS;
     console.log(req.body.security);
-    if(req.body.security+"" === 'undefined' ) {
-        secS=false;
+    if (req.body.security + "" === 'undefined' || req.body.security === false) {
+        secS = false;
     }
-    else secS=req.body.security;
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+req.decoded.tel+ "  "+ req.body.tel);
-    if(req.decoded.tel+"" === '-' && req.body.tel+"" !== 'undefined'){
+    else secS = req.body.security;
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + req.decoded.tel + "  " + req.body.tel);
+    if (req.decoded.tel + "" === '-' && req.body.tel + "" !== 'undefined') {
 
-        numTel= req.body.tel;
+        numTel = req.body.tel;
         newvalues = {$set: {tel: numTel, useMyNumForSec: secS}};
-        sec =true;
+        // sec =true;
     }
-    else if(req.decoded.tel+"" !== '-' && req.body.tel+"" !== 'undefined'){
-        numTel= req.body.tel;
+    else if (req.decoded.tel + "" !== '-' && req.body.tel + "" !== 'undefined') {
+        numTel = req.body.tel;
         newvalues = {$set: {tel: numTel, useMyNumForSec: secS}};
-        sec=true;
+        // sec=true;
 
-    }else if(req.decoded.tel+"" !== '-' && req.body.tel+"" === 'undefined'){
-        numTel= req.decoded.tel;
+    } else if (req.decoded.tel + "" !== '-' && req.body.tel + "" === 'undefined') {
+        numTel = req.decoded.tel;
         newvalues = {$set: {tel: numTel, useMyNumForSec: secS}};
-        sec=true;
+        // sec=true;
 
-    } else if(req.decoded.tel+"" === "-" && req.body.tel+"" === 'undefined'){
+    } else if (req.decoded.tel + "" === "-" && req.body.tel + "" === 'undefined') {
         //demande a l'user se saisir un num
 
-        res.json({message:'vous devez saisir un numeros de tel !', success:false});
+        res.json({message: 'vous devez saisir un numeros de tel !', success: false});
     }
 
-    if(sec){
+    // if(sec){
+    User.updateOne(myquery, newvalues, function (err) {
+        if (err)
+            console.log(err);
 
-        User.updateOne(myquery, newvalues, function (err) {
-            if (err)
-                console.log(err);
 
-
-            else {
-
-                res.json({message:'votre compte est bien sécurisé!', success: true});
-
+        else {
+            if (secS === 'true') {
+                res.json({message: 'votre compte est bien sécurisé !', success: true});
+            } else if (secS === 'false') {
+                res.json({message:'votre compte est non sécurisé !', success: false});
+            }
+            else if(!secS){
+                res.json({message:'votre compte est non sécurisé !', success: false});
             }
 
-        })
-    }
+        }
+
+    })
+    // }
 
 })
 api.post('/updateUserPass', function (req, res) {

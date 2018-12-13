@@ -5,7 +5,6 @@
         <div class="container" ng-controller="UserController as user" style="width:350px;float: left;">
             <div class="row" >
                 <div class="col-sm-12" >
-                    {{user.hasSecurity()}}
                     <form method="post" ng-submit="user.updateUserPassToken()">
 
                         <div ng-if="user.hasSecurity()">

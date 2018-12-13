@@ -1,6 +1,6 @@
 angular.module('playlistCtrl', ['playlistService'])
 
-    .controller('playlistCtrl', function (Playlist, User, Auth, $window, $location, $scope,$route) {
+    .controller('playlistCtrl', function (Playlist, User, Auth, $window, $location, $scope,$timeout) {
         let vm = this;
         $scope.array = [];
         $scope.arrayNomPlaylist = [];
@@ -28,6 +28,9 @@ angular.module('playlistCtrl', ['playlistService'])
                 if($scope.arrayNomPlaylist[i] === vm.playlistData.namePlaylist){
                     vm.error='La playlist existe déjà !';
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     return;
                 }
             }
@@ -35,6 +38,9 @@ angular.module('playlistCtrl', ['playlistService'])
             if(Auth.checkInput(vm.playlistData.namePlaylist)){
                 vm.error='Le non de la playlist ne peut pas contenir de "$" ';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 return;
             }
 
@@ -43,10 +49,16 @@ angular.module('playlistCtrl', ['playlistService'])
                     if(charInterdits[i] === " "){
                         vm.error="Le nom de la playlist ne peut pas contenir d'espace !";
                         vm.throws=true;
+                        $timeout(function () {
+                            vm.throws = false;
+                        }, 3000);
                         return;
                     }
                     vm.error="Le nom de la playlist ne peut pas contenir de " + charInterdits[i];
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     // $window.alert();
                     return;
                 }
@@ -123,6 +135,9 @@ angular.module('playlistCtrl', ['playlistService'])
             if(!playlist){
                 vm.error='Aucune playlist sélectionnée !';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 vm.messageSuccess = false;
                 return;
             }
@@ -130,6 +145,9 @@ angular.module('playlistCtrl', ['playlistService'])
             if(!url){
                 vm.error='Aucune video sélectionnée !';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 vm.messageSuccess = false;
                 return;
             }
@@ -139,6 +157,9 @@ angular.module('playlistCtrl', ['playlistService'])
                     vm.getListPlaylist();
                     vm.error='La video est ajoutée dans la nouvelle playlist : '+playlist;
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     vm.messageSuccess = true;
                 });
             });
@@ -195,6 +216,9 @@ angular.module('playlistCtrl', ['playlistService'])
             if(!url){
                 vm.error='Aucune video sélectionnée !';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 vm.messageSuccess = false;
                 return;
             }
@@ -203,6 +227,9 @@ angular.module('playlistCtrl', ['playlistService'])
                 if(Auth.checkInput(playlist)){
                     vm.error='Le champ de saisie ne peut pas contenir de "$" ';
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     vm.messageSuccess = false;
                     return;
                 }
@@ -211,6 +238,9 @@ angular.module('playlistCtrl', ['playlistService'])
                     if($scope.arrayNomPlaylist[i] === playlist){
                         vm.error='La playlist existe déjà !';
                         vm.throws=true;
+                        $timeout(function () {
+                            vm.throws = false;
+                        }, 3000);
                         vm.messageSuccess = false;
                         return;
                     }
@@ -219,6 +249,9 @@ angular.module('playlistCtrl', ['playlistService'])
             }else{
                 vm.error='Aucune playlist sélectionnée !';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 vm.messageSuccess = false;
                 return;
             }
@@ -229,6 +262,9 @@ angular.module('playlistCtrl', ['playlistService'])
             vm.addVideo(playlist, url,title,source,image);
             vm.error='La video est ajoutée dans la nouvelle playlist : '+playlist;
             vm.throws=true;
+            $timeout(function () {
+                vm.throws = false;
+            }, 3000);
             vm.messageSuccess = true;
         };
 

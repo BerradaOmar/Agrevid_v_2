@@ -117,7 +117,6 @@ angular.module('userCtrl', ['userService'])
 
         //pour gerer l'affichage des notifications
         vm.showMessage = function () {
-
             return vm.throws;
         }
 
@@ -144,6 +143,9 @@ angular.module('userCtrl', ['userService'])
                 if(Auth.checkInput(vm.userData.name)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     return;
                 }
             }
@@ -151,6 +153,9 @@ angular.module('userCtrl', ['userService'])
                 if(Auth.checkInput(vm.userData.email)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     return;
                 }
             }
@@ -159,6 +164,9 @@ angular.module('userCtrl', ['userService'])
                 if(Auth.checkInput(vm.userData.password)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
                     vm.throws=true;
+                    $timeout(function () {
+                        vm.throws = false;
+                    }, 3000);
                     return;
                 }
             }
@@ -192,6 +200,9 @@ angular.module('userCtrl', ['userService'])
             if(Auth.checkInput(vm.userData.passwordOld) || Auth.checkInput(vm.userData.passwordNew)){
                 vm.msg='Le champ de saisie ne peut pas contenir "$" ';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 return;
             }
 
@@ -225,10 +236,9 @@ angular.module('userCtrl', ['userService'])
         vm.updateSecTel = function () {
             User.updateSecTel(vm.userData).success(function (data) {
                  vm.msg = data.message;
-                 vm.throws = true;
-                 vm.secUpdatedSuccess = data.success;
-
-
+                 console.log(data.success);
+                vm.secUpdatedSuccess = data.success;
+                vm.throws = true;
             })
         }
 
@@ -280,6 +290,9 @@ angular.module('userCtrl', ['userService'])
                 console.log('injection detected');
                 vm.error='Le champ de saisie ne peut pas contenir de "$" ';
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 return;
             }
 
@@ -347,7 +360,9 @@ angular.module('userCtrl', ['userService'])
 
                            vm.errorsignup = 'email déja utilisé par un autre utilisateur!';
                            vm.throws=true;
-
+                           $timeout(function () {
+                               vm.throws = false;
+                           }, 3000);
 
                        }
                     })

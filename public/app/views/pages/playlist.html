@@ -4,14 +4,14 @@
             <div>
                 <button type="button" class="btn btn-primary" style="width:25%;" data-toggle="modal"
                         data-target="#addplaylist">
-                    Add New Playlist
+                    Ajouter nouvelle Playlist
                 </button>
             </div>
 
             <!-- THE PLAYLIST -->
             <div ng-repeat="x in array">
                 <h3>Playlist : {{x.namePlaylist}} </h3>
-                <button ng-click="playlist.deletePlaylist(x.namePlaylist)" class="btn btn-success"> delete playlist
+                <button ng-click="playlist.deletePlaylist(x.namePlaylist)" class="btn btn-success"> supprimer playlist
                 </button>
                 <div class="vid-list-container">
                     <div class="vid-list">
@@ -34,7 +34,7 @@
                 <div class="modal-dialog " role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title text-center">Add New Playlist
+                            <h3 class="modal-title text-center">Ajouter une nouvelle playlist
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -49,9 +49,9 @@
                                         <strong>Warning!  </strong>{{playlist.error}}
                                     </div>
                                     <form class="form-signin" method="post" ng-submit="playlist.createUserPlaylist()">
-                                        new playlist : <input type="text" name="namePlaylist"
+                                        nouvelle playlist : <input type="text" name="namePlaylist"
                                                               ng-model="playlist.playlistData.namePlaylist">
-                                        <button type="submit" class="btn btn-success">Add Playlist</button>
+                                        <button type="submit" class="btn btn-success">ajouter Playlist</button>
                                     </form>
                                 </div>
                             </div>

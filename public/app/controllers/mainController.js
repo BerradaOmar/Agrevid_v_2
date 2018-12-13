@@ -1,6 +1,6 @@
 angular.module('mainCtrl', [])
 
-    .controller('MainController', function ($rootScope, $location, $window, Auth, User) {
+    .controller('MainController', function ($rootScope, $location, $window, Auth, User,$timeout) {
 
         let vm = this;
         vm.falseSubmitNb = 0;
@@ -50,6 +50,9 @@ angular.module('mainCtrl', [])
                     if(Auth.checkInput(vm.loginData.password) || Auth.checkInput(vm.loginData.username)){
                         vm.error="Email ou mot de passe incorrecte !";
                         vm.throws=true;
+                        $timeout(function () {
+                            vm.throws = false;
+                        }, 3000);
                         vm.falseSubmitNb++;
                         return;
                     }
@@ -58,6 +61,9 @@ angular.module('mainCtrl', [])
                         if (!response.checked) {
                             vm.error="Email ou mot de passe incorrecte !";
                             vm.throws=true;
+                            $timeout(function () {
+                                vm.throws = false;
+                            }, 3000);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -67,6 +73,9 @@ angular.module('mainCtrl', [])
                             // $window.alert("Mot de passe incorrecte !");
                             vm.error="Email ou mot de passe incorrecte !";
                             vm.throws=true;
+                            $timeout(function () {
+                                vm.throws = false;
+                            }, 3000);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -77,12 +86,18 @@ angular.module('mainCtrl', [])
                             if (charInterdits[i] == " ") {
                                 vm.error="Email ou mot de passe incorrecte !";
                                 vm.throws=true;
+                                $timeout(function () {
+                                    vm.throws = false;
+                                }, 3000);
                                 vm.falseSubmitNb++;
                                 return;
                             }
 
                             vm.error="Email ou mot de passe incorrecte !";
                             vm.throws=true;
+                            $timeout(function () {
+                                vm.throws = false;
+                            }, 3000);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -100,6 +115,9 @@ angular.module('mainCtrl', [])
                     if (majCheck == false) {
                         vm.error="Email ou mot de passe incorrecte !";
                         vm.throws=true;
+                        $timeout(function () {
+                            vm.throws = false;
+                        }, 3000);
                         vm.falseSubmitNb++;
                         return;
                     }
@@ -120,6 +138,9 @@ angular.module('mainCtrl', [])
                                 vm.falseSubmitNb++;
                                 vm.error = data.message;
                                 vm.throws=true;
+                                $timeout(function () {
+                                    vm.throws = false;
+                                }, 3000);
                             }
                         });
 
@@ -127,6 +148,9 @@ angular.module('mainCtrl', [])
             } else {
                 vm.error="Vous avez atteint le nombre maximum de tentatives.\n";
                 vm.throws=true;
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
                 // $window.alert('Vous avez atteint le nombre maximum de tentatives.');
             }
         }
@@ -141,7 +165,9 @@ angular.module('mainCtrl', [])
                 $location.path('/logout');
                 vm.error="Vous êtes bien déconnecté.";
                 vm.throws=true;
-
+                $timeout(function () {
+                    vm.throws = false;
+                }, 3000);
             });
 
         }
