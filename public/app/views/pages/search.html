@@ -16,13 +16,13 @@
                     <div>
                         <h4> {{video.title}}</h4>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <video class="embed-responsive-item" width="640"
+                            <video ng-if="video.showVid" class="embed-responsive-item" width="640"
                                    height="360" id="vid_frame" controls controlsList="nodownload"
                                    src="{{'/pilote/watchVideo/'+video.videoSrc+'/'+video.url}}"
                                    type="video/mp4" frameborder="0" controls>
                             </video>
                         </div>
-                        <button class="btn-toolbar btn-success" data-toggle="modal" data-target="#myModal" data-toggle="tooltip"
+                        <button ng-if="video.showVid" class="btn-toolbar btn-success" data-toggle="modal" data-target="#myModal" data-toggle="tooltip"
                                 title="ajouter dans une playlist" ng-click="playlist.getListPlaylist()">
                             <span class="glyphicon glyphicon-plus-sign"></span> Ajouter à une playlist
 
