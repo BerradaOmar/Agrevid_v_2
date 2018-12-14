@@ -49,10 +49,7 @@ angular.module('mainCtrl', [])
 
                     if(Auth.checkInput(vm.loginData.password) || Auth.checkInput(vm.loginData.username)){
                         vm.error="Email ou mot de passe incorrecte !";
-                        vm.throws=true;
-                        $timeout(function () {
-                            vm.throws = false;
-                        }, 3000);
+                        Notification.error(vm.error);
                         vm.falseSubmitNb++;
                         return;
                     }
@@ -60,10 +57,7 @@ angular.module('mainCtrl', [])
                     if (vm.loginData.username != "agrevid@gmail.com") {
                         if (!response.checked) {
                             vm.error="Email ou mot de passe incorrecte !";
-                            vm.throws=true;
-                            $timeout(function () {
-                                vm.throws = false;
-                            }, 3000);
+                            Notification.error(vm.error);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -72,10 +66,7 @@ angular.module('mainCtrl', [])
                         if (vm.loginData.password.length < 8) {
                             // $window.alert("Mot de passe incorrecte !");
                             vm.error="Email ou mot de passe incorrecte !";
-                            vm.throws=true;
-                            $timeout(function () {
-                                vm.throws = false;
-                            }, 3000);
+                            Notification.error(vm.error);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -85,19 +76,13 @@ angular.module('mainCtrl', [])
                         if (vm.loginData.password.includes(charInterdits[i])) {
                             if (charInterdits[i] == " ") {
                                 vm.error="Email ou mot de passe incorrecte !";
-                                vm.throws=true;
-                                $timeout(function () {
-                                    vm.throws = false;
-                                }, 3000);
+                                Notification.error(vm.error);
                                 vm.falseSubmitNb++;
                                 return;
                             }
 
                             vm.error="Email ou mot de passe incorrecte !";
-                            vm.throws=true;
-                            $timeout(function () {
-                                vm.throws = false;
-                            }, 3000);
+                            Notification.error(vm.error);
                             vm.falseSubmitNb++;
                             return;
                         }
@@ -114,10 +99,7 @@ angular.module('mainCtrl', [])
 
                     if (majCheck == false) {
                         vm.error="Email ou mot de passe incorrecte !";
-                        vm.throws=true;
-                        $timeout(function () {
-                            vm.throws = false;
-                        }, 3000);
+                        Notification.error(vm.error);
                         vm.falseSubmitNb++;
                         return;
                     }
@@ -160,10 +142,8 @@ angular.module('mainCtrl', [])
                 $window.localStorage.setItem('token', '');
                 $location.path('/logout');
                 vm.error="Vous êtes bien déconnecté.";
-                vm.throws=true;
-                $timeout(function () {
-                    vm.throws = false;
-                }, 3000);
+                Notification.success(vm.error);
+
             });
 
         }
@@ -186,8 +166,6 @@ angular.module('mainCtrl', [])
         vm.submitOk = function () {
             return vm.submitSendPass;
         }
-
-
 
 
     });

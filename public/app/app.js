@@ -14,11 +14,12 @@ angular.module('MyApp', ['appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'us
     .config(function (NotificationProvider) {
         NotificationProvider.setOptions({
             delay: 10000,
-            startTop: 20,
+            startTop: 70,
             startRight: 10,
             verticalSpacing: 20,
             horizontalSpacing: 20,
             positionX: 'center',
-            positionY: 'center'
+            positionY: 'top',
+            maxCount : 3
         });
     });

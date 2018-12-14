@@ -79,7 +79,8 @@ api.post('/createPlaylist',function (req, res) {
         else {
             //console.log("New Playlist created : " + playlistData.namePlaylist + " by user : " + playlistData.idUser);
             res.json({
-                message : 'la playlist est crée avec succès !'
+                message : 'la playlist est crée avec succès !',
+                name : playlistData.namePlaylist
             });
         }
     });
