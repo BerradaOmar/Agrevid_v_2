@@ -1,6 +1,6 @@
 angular.module('mainCtrl', [])
 
-    .controller('MainController', function ($rootScope, $location, $window, Auth, User,$timeout) {
+    .controller('MainController', function ($rootScope, $location, $window, Auth, User,$timeout,Notification) {
 
         let vm = this;
         vm.falseSubmitNb = 0;
@@ -132,25 +132,21 @@ angular.module('mainCtrl', [])
                                     vm.user = data.data;
                                 });
 
-                            if (data.success)
+                            if (data.success){
                                 $location.path('/');
+                                Notification.success('Vous êtes bien connecté !');
+                            }
                             else {
                                 vm.falseSubmitNb++;
-                                vm.error = data.message;
-                                vm.throws=true;
-                                $timeout(function () {
-                                    vm.throws = false;
-                                }, 3000);
+                                Notification.error(data.message);
                             }
                         });
 
                 });
             } else {
-                vm.error="Vous avez atteint le nombre maximum de tentatives.\n";
-                vm.throws=true;
-                $timeout(function () {
-                    vm.throws = false;
-                }, 3000);
+                vm.error="Vous avez atteint le nombre maximum de tentatives !";
+                Notification.error(vm.error);
+
                 // $window.alert('Vous avez atteint le nombre maximum de tentatives.');
             }
         }
