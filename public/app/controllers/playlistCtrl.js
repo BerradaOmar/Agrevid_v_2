@@ -71,6 +71,7 @@ angular.module('playlistCtrl', ['playlistService'])
 
                 Playlist.get(vm.userId).then(function (res) {
                     // console.log('Playlist recuperer ');
+                    // console.log(res.data)
 
                     angular.forEach((res.data), function (element) {
                         $scope.array.push(element);
@@ -154,25 +155,26 @@ angular.module('playlistCtrl', ['playlistService'])
             });
         };
 
-        vm.deleteVideoBis = function (playlist, video) {
+       vm.deleteVideoBis =  function (playlist, video) {
 
             Auth.getUser().then(function (response) {
                 vm.userId = response.data.id;
-                Playlist.deleteVideo(vm.userId, playlist.namePlaylist, video);
+                Playlist.deleteVideo(vm.userId, playlist.namePlaylist, video).then(async function () {
+                    $scope.selectedPlaylist = [];
+                    await vm.getListPlaylist();
 
-                vm.getListPlaylist();
-                $scope.selectedPlaylist = [];
-                for(let i=0; i<$scope.array.length;i++){
-                    // console.log($scope.array[i]);
-                    if($scope.array[i].namePlaylist === playlist.namePlaylist){
-                        // console.log("here1 :"+$scope.selectedPlaylist);
-                        $scope.selectedPlaylist = $scope.array[i];
-                        // console.log("here2 :"+$scope.selectedPlaylist.playlist);
+                    for(let i=0; i<$scope.array.length;i++){
+                        // console.log($scope.array[i]);
+                        if($scope.array[i].namePlaylist === playlist.namePlaylist){
+                            // console.log("here1 :"+$scope.selectedPlaylist);
+
+                            $scope.selectedPlaylist = $scope.array[i];
+                            // console.log("here2 :"+$scope.selectedPlaylist.playlist);
+                        }
                     }
-                }
-
+                });
             });
-            $location.path('/videoPlaylist');
+
         };
 
 

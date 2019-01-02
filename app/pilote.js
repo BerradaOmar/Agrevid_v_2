@@ -352,13 +352,13 @@ module.exports = function (app, express) {
             });
     })
 
-    api.get('/searchYoutubeVideos/:search', function (req, res) {
+    api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
         request.get(
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                 },
-                url: 'https://agrevid.com:3002/searchYoutubeVideos/' + req.params.search + '',
+                url: 'https://agrevid.com:3002/searchYoutubeVideos/' + req.params.search +'/'+req.params.nextPageToken,
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -369,13 +369,13 @@ module.exports = function (app, express) {
             });
     })
 
-    api.get('/searchVimeoVideos/:search', function (req, res) {
+    api.get('/searchVimeoVideos/:search/:page', function (req, res) {
         request.get(
             {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                 },
-                url: 'https://agrevid.com:3002/searchVimeoVideos/' + req.params.search + '',
+                url: 'https://agrevid.com:3002/searchVimeoVideos/' + req.params.search +'/'+req.params.page+'',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred

@@ -1,5 +1,8 @@
 body {
     background-image: url("../images/background_principal.jpg");
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+
     padding: 15px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -7,6 +10,11 @@ body {
 a {
     color: #00B7FF;
 
+}
+
+.logo-img{
+    background-image: url("../views/img/agre_logo_2.png");
+    z-index:-1;
 }
 
 /*video{*/
@@ -192,7 +200,7 @@ a {
     margin-top: 5px;
     margin-left: 14%;
     padding-bottom: auto;
-    background-color: #FFE4E1;
+    background-color: whitesmoke;
     overflow-y: hidden;
 
 }

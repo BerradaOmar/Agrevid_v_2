@@ -9,6 +9,7 @@ angular.module('videoCtrl', ['videoService'])
         vm.image = '';
         vm.youtubeList = true;
         vm.showVid = false;
+        let nextPageToken = '';
 
         // vm.url = "https://r4---sn-n4g-hgnz.googlevideo.com/videoplayback?source=youtube&id=o-AGvY0HursJvaMI26QXpYkeAVD-bDkuc3E5jk7OvhJyEy&requiressl=yes&dur=225.047&pl=23&ip=34.211.145.200&txp=2211222&signature=74D2A92DB76667859A0B0D2E195362DE2B4E33E2.73CEDD01F5C2B33BE3779449A3AF9AC8B6065BD3&ratebypass=yes&fvip=4&ei=EzPQW5nbG5L-kgbQo6GAAw&c=WEB&mime=video%2Fmp4&itag=18&key=cms1&gir=yes&clen=9024154&sparams=clen,dur,ei,expire,gir,id,ip,ipbits,ipbypass,itag,lmt,mime,mip,mm,mn,ms,mv,pcm2cms,pl,ratebypass,requiressl,source&ipbits=0&expire=1540392819&lmt=1535622348334163&redirect_counter=1&rm=sn-nx5ld7z&fexp=23763603&req_id=73294e971bc5a3ee&cms_redirect=yes&ipbypass=yes&mip=78.113.113.141&mm=31&mn=sn-n4g-hgnz&ms=au&mt=1540371087&mv=m&pcm2cms=yes";
 
@@ -16,27 +17,50 @@ angular.module('videoCtrl', ['videoService'])
         vm.token = AuthToken.getToken();
         vm.youtubeVideos = [];
         vm.vimeoVideos = [];
+        let vimeoPagination = 2;
+
 
         //trustSrc pour qu'Angular ne bloque pas les sources non fiables (externes)
         vm.trustSrc = function (src) {
             return $sce.trustAsResourceUrl(src);
         }
 
+        vm.loadMoreVimeo = function(){
+            Video.searchVimeoVideo(vm.search.title,vimeoPagination).then(function(res){
+                angular.forEach(res.data.results,function (elem) {
+                    vm.vimeoVideos.push(elem);
+                })
+                vimeoPagination++;
+            });
+        }
+
+        vm.loadMoreYoutube = function(){
+            Video.searchYoutubeVideo(vm.search.title,nextPageToken).then(async function(res){
+               await angular.forEach(res.data.results,function (elem) {
+                    vm.youtubeVideos.push(elem);
+                })
+
+                // console.log(res.data.videoPerPage);
+
+                nextPageToken = res.data.nextPageToken;
+            });
+        }
 
         //méthode déclanchée lors de la recherche de video
         vm.doSearch = function () {
             blockUI.start();
 
-            Video.searchVimeoVideo(vm.search.title).then(function(res){
+            Video.searchVimeoVideo(vm.search.title,1).then(function(res){
                 vm.vimeoVideos = res.data.results;
                 console.log(vm.vimeoVideos);
             });
 
-            Video.searchYoutubeVideo(vm.search.title).then(function (res) {
+            Video.searchYoutubeVideo(vm.search.title,"sdfs").then(function (res) {
 
                 $location.path('/search');
 
                 vm.youtubeVideos = res.data.results;
+                nextPageToken = res.data.nextPageToken;
                 console.log(vm.youtubeVideos);
 
                 let regExLettres = new RegExp('^[a-zA-Z0-9-()/:?.= ]*$');
@@ -62,10 +86,10 @@ angular.module('videoCtrl', ['videoService'])
         }
         
         vm.streamYoutubeVideo = function (video) {
-            vm.url = video.id;
-            vm.title = video.title;
+            vm.url = video.id.videoId;
+            vm.title = video.snippet.title;
             vm.videoSrc = 'youtube';
-            vm.image = video.raw.snippet.thumbnails.medium.url;
+            vm.image = video.snippet.thumbnails.medium.url;
             vm.showVid = true;
             // $location.path('/video');
             // $route.reload();

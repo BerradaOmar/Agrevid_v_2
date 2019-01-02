@@ -13,13 +13,24 @@ angular.module('MyApp', ['appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'us
     })
     .config(function (NotificationProvider) {
         NotificationProvider.setOptions({
-            delay: 10000,
+            delay: 3000,
             startTop: 70,
             startRight: 10,
             verticalSpacing: 20,
             horizontalSpacing: 20,
             positionX: 'center',
             positionY: 'top',
-            maxCount : 3
+            maxCount: 3
         });
+    })
+    .directive('whenScrolled', function () {
+        return function (scope, elm, attr) {
+            var raw = elm[0];
+
+            elm.bind('scroll', function () {
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.$apply(attr.whenScrolled);
+                }
+            });
+        };
     });

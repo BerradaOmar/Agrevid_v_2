@@ -22,7 +22,8 @@
                                    type="video/mp4" frameborder="0" controls>
                             </video>
                         </div>
-                        <button ng-if="video.showVid" class="btn-toolbar btn-success" data-toggle="modal" data-target="#myModal" data-toggle="tooltip"
+                        <button ng-if="video.showVid" class="btn-toolbar btn-success" data-toggle="modal"
+                                data-target="#myModal" data-toggle="tooltip"
                                 title="ajouter dans une playlist" ng-click="playlist.getListPlaylist()">
                             <span class="glyphicon glyphicon-plus-sign"></span> Ajouter à une playlist
 
@@ -32,36 +33,53 @@
                             <div class="modal-dialog">
 
                                 <!-- Modal content-->
-                                <div class="modal-content" style="width:70%" >
+                                <div class="modal-content" style="width:70%">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <div class="modal-header">
-                                        <div  ng-if="playlist.showMessage() && !playlist.messageSuccess" class="alert alert-warning" style="margin-left:0% ;width: 360px;height: auto;">
-                                            <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
-                                                ×</button>
-                                            <strong>Warning!  </strong>{{playlist.error}}
+                                        <div ng-if="playlist.showMessage() && !playlist.messageSuccess"
+                                             class="alert alert-warning"
+                                             style="margin-left:0% ;width: 360px;height: auto;">
+                                            <button type="button" ng-click="playlist.stopMessage()" class="close"
+                                                    data-dismiss="alert" aria-hidden="true">
+                                                ×
+                                            </button>
+                                            <strong>Warning! </strong>{{playlist.error}}
                                         </div>
 
-                                        <div  ng-if="playlist.showMessage() && playlist.messageSuccess" class="alert alert-success" style="margin-left:0% ;width: 360px;height: auto;">
-                                            <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
-                                                ×</button>
-                                            <strong>Success!  </strong>{{playlist.error}}
+                                        <div ng-if="playlist.showMessage() && playlist.messageSuccess"
+                                             class="alert alert-success"
+                                             style="margin-left:0% ;width: 360px;height: auto;">
+                                            <button type="button" ng-click="playlist.stopMessage()" class="close"
+                                                    data-dismiss="alert" aria-hidden="true">
+                                                ×
+                                            </button>
+                                            <strong>Success! </strong>{{playlist.error}}
                                         </div>
 
                                         <h4 class="modal-title">Playlist</h4>
                                     </div>
 
-                                    <div class="modal-body" >
+                                    <div class="modal-body">
                                         <form>
                                             <p>Choisir une playlist :</p>
 
-                                            <select style="margin-bottom: 10px" class="form-control" ng-model="namePlaylistS" ng-options="p for p in arrayNomPlaylist" >
+                                            <select style="margin-bottom: 10px" class="form-control"
+                                                    ng-model="namePlaylistS" ng-options="p for p in arrayNomPlaylist">
                                             </select>
-                                            <button class="btn btn-success"  ng-click="playlist.addVideo(namePlaylistS,video.url,video.title,video.videoSrc,video.image)" >ajouter la video</button>
+                                            <button class="btn btn-success"
+                                                    ng-click="playlist.addVideo(namePlaylistS,video.url,video.title,video.videoSrc,video.image)">
+                                                ajouter la video
+                                            </button>
                                         </form>
-                                        <form class="form-signin" method="post" ng-submit="playlist.createAndAdd(nameplaylistT,video.url,video.title,video.videoSrc,video.image)">
+                                        <form class="form-signin" method="post"
+                                              ng-submit="playlist.createAndAdd(nameplaylistT,video.url,video.title,video.videoSrc,video.image)">
                                             <p style="padding-top: 10px;">Ou créer une nouvelle playlist :</p>
-                                            Nouvelle playlist : <input style="margin-bottom: 10px" class="form-control" type="text" name="nameplaylistT" ng-model="nameplaylistT">
-                                            <button class="btn btn-success" type="submit" >céer et ajouter la video dedans</button>
+                                            Nouvelle playlist : <input style="margin-bottom: 10px" class="form-control"
+                                                                       type="text" name="nameplaylistT"
+                                                                       ng-model="nameplaylistT">
+                                            <button class="btn btn-success" type="submit">céer et ajouter la video
+                                                dedans
+                                            </button>
                                         </form>
 
                                     </div>
@@ -95,23 +113,24 @@
                         </div>
                     </nav>
 
+                    <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreYoutube()">
+                            <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos" style="width:400px;" >
+                                <img src="{{x.snippet.thumbnails.medium.url}}"
+                                     ng-click="video.streamYoutubeVideo(x)"
+                                     alt="ALT NAME"
+                                     class="pull-left span2 clearfix"
+                                     style='width:168px;height:94px;   margin-right:10px'>
+                                <div class="caption" class="pull-left">
 
-                    <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;">
-                        <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos" style="width:400px;">
-                            <img src="{{x.raw.snippet.thumbnails.medium.url}}" ng-click="video.streamYoutubeVideo(x)"
-                                 alt="ALT NAME"
-                                 class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
-                            <div class="caption" class="pull-left">
-
-                                <h5>
-                                    <a href="#" ng-click="video.streamYoutubeVideo(x)">{{x.title}}</a>
-                                </h5>
-                                <small>{{x.channel.title}}</small>
+                                    <h5>
+                                        <a href="#" ng-click="video.streamYoutubeVideo(x)">{{x.snippet.title}}</a>
+                                    </h5>
+                                    <small>{{x.snippet.channelTitle}}</small>
+                                </div>
                             </div>
-                        </div>
                     </div>
 
-                    <div ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px;">
+                    <div ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreVimeo()">
                         <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos" style="width:400px;">
                             <img src="{{y.pictures.sizes[3].link}}" ng-click="video.streamVimeoVideo(y)" alt="ALT NAME"
                                  class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
@@ -128,9 +147,6 @@
             </div>
         </div>
     </div>
-
-
-
 
 
 </div>

@@ -26,12 +26,12 @@ angular.module('videoService',[])
         return $http.get('/pilote/search/'+title);
     }
 
-    videoFactory.searchYoutubeVideo = function(title){
-        return $http.get('/pilote/searchYoutubeVideos/'+title);
+    videoFactory.searchYoutubeVideo = function(title,nextPageToken){
+        return $http.get('/pilote/searchYoutubeVideos/'+title+'/'+nextPageToken);
     }
 
-    videoFactory.searchVimeoVideo = function(title){
-        return $http.get('/pilote/searchVimeoVideos/'+title);
+    videoFactory.searchVimeoVideo = function(title,page){
+        return $http.get('/pilote/searchVimeoVideos/'+title+'/'+page);
     }
 
     return videoFactory;

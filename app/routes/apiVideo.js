@@ -75,15 +75,18 @@ api.get('/search/:search', function (req, res) {
 
 
 /*méthode qui cherche les videos de youtube*/
-api.get('/searchYoutubeVideos/:search', function (req, res) {
+api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
 
     let search = req.params.search;
+    let nextPageToken = req.params.nextPageToken;
     // console.log(search);
     //res.writeHead(200, {'Content-Type': 'video/mp4'});
-    youtube.searchVideos(search, 25)
+    youtube.searchVideos(search, 25,{},nextPageToken)
         .then(function (results) {
             res.json({
-                results
+                results : results.items,
+                nextPageToken : results.nextPageToken,
+                videoPerPage : results.pageInfo.resultsPerPage
             });
         })
         .catch(console.log);
@@ -91,10 +94,11 @@ api.get('/searchYoutubeVideos/:search', function (req, res) {
 })
 
 /*méthode qui cherche les videos de vimeo*/
-api.get('/searchVimeoVideos/:search', function (req, res) {
+api.get('/searchVimeoVideos/:search/:page', function (req, res) {
     let search = req.params.search;
+    let page = req.params.page;
 
-
+    console.log("page : "+page);
     search = search.replace(/ /g, "+");
     // console.log(search);
 
@@ -106,7 +110,7 @@ api.get('/searchVimeoVideos/:search', function (req, res) {
         // page
 
         query: {
-            page: 1
+            page: page
         }
 
     }, /*callback*/function (error, body, status_code, headers) {
