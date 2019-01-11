@@ -18,8 +18,8 @@ angular.module('MyApp', ['appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'us
             startRight: 10,
             verticalSpacing: 20,
             horizontalSpacing: 20,
-            positionX: 'center',
-            positionY: 'top',
+            positionX: 'right',
+            positionY: 'bottom',
             maxCount: 3
         });
     })
