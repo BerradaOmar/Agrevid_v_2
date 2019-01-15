@@ -114,7 +114,7 @@
                     </nav>
 
                     <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreYoutube()">
-                            <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos" style="width:400px;" >
+                            <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos track by $index" style="width:400px;" >
                                 <img src="{{x.snippet.thumbnails.medium.url}}"
                                      ng-click="video.streamYoutubeVideo(x)"
                                      alt="ALT NAME"
@@ -131,7 +131,7 @@
                     </div>
 
                     <div ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreVimeo()">
-                        <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos" style="width:400px;">
+                        <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos track by $index" style="width:400px;">
                             <img src="{{y.pictures.sizes[3].link}}" ng-click="video.streamVimeoVideo(y)" alt="ALT NAME"
                                  class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
                             <div class="caption" class="pull-left">

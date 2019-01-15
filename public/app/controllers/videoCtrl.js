@@ -1,7 +1,7 @@
 angular.module('videoCtrl', ['videoService'])
 
 
-    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route,$http,$q,blockUI,$scope,$timeout) {
+    .controller('VideoController', function (Video, AuthToken, $window, $sce, $location, $route,$http,$q,$scope,$timeout,blockUI) {
         let vm = this;
         vm.url = '';
         vm.title = '\xa0\xa0\xa0';
@@ -35,24 +35,26 @@ angular.module('videoCtrl', ['videoService'])
         }
 
         vm.loadMoreYoutube = function(){
-            Video.searchYoutubeVideo(vm.search.title,nextPageToken).then(async function(res){
-               await angular.forEach(res.data.results,function (elem) {
-                    vm.youtubeVideos.push(elem);
-                })
+            if(nextPageToken+"" !== 'undefined' ){
+                Video.searchYoutubeVideo(vm.search.title,nextPageToken).then(async function(res){
+                    await angular.forEach(res.data.results,function (elem) {
+                        vm.youtubeVideos.push(elem);
+                    })
 
-                // console.log(res.data.videoPerPage);
+                    // console.log(res.data.videoPerPage);
 
-                nextPageToken = res.data.nextPageToken;
-            });
+                    nextPageToken = res.data.nextPageToken;
+                });
+            }
         }
 
         //méthode déclanchée lors de la recherche de video
         vm.doSearch = function () {
-            blockUI.start();
 
             Video.searchVimeoVideo(vm.search.title,1).then(function(res){
                 vm.vimeoVideos = res.data.results;
                 console.log(vm.vimeoVideos);
+
             });
 
             Video.searchYoutubeVideo(vm.search.title,"sdfs").then(function (res) {
@@ -73,15 +75,12 @@ angular.module('videoCtrl', ['videoService'])
                 Video.search(vm.search.title);
                 // Video.setSearchTitle(vm.search.title);
 
-                $route.reload();
+                // $route.reload();
 
 
             });
 
-            $timeout(function() {
-                // Stop the block after some async operation.
-                blockUI.stop();
-            }, 1000);
+
 
         }
         

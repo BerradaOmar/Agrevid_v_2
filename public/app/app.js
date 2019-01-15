@@ -8,6 +8,19 @@ angular.module('MyApp', ['cp.ngConfirm','appRoutes', 'mainCtrl', 'authService', 
         // Change the default overlay message
         blockUIConfig.message = 'Chargement en cours';
 
+
+        blockUIConfig.requestFilter = function(config) {
+            // If the request starts with '/api/quote' ...
+            if(config.url.match(/^\/pilote\/isTokenValid($|\/).*/)) {
+                return false; // ... don't block it.
+            }
+            if(config.url.match(/^\/pilote\/watchVideo($|\/).*/)) {
+                    return false; // ... don't block it.
+            }
+
+
+
+        };
         // Change the default delay to 100ms before the blocking is visible
         // blockUIConfig.delay = 100;
     })
