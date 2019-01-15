@@ -66,6 +66,8 @@ let transporter = nodemailer.createTransport({
     }
 });
 
+
+
 function createToken(user) {
     let token = jsonwebtoken.sign({
         id: user._id,
@@ -100,6 +102,19 @@ function createTokenforUpdatePass(user, codeVerification) {
 }
 
 
+api.use(function (req,res,next) {
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8095');
+
+   /* //Request methods you wish to allow
+    res.setHeader("Access-Control-Allow-Methods", "POST");
+
+    //Request headers you wish to allow
+    res.setHeader("Access-Control-Allow-Headers", "X-requested-with,content-type");*/
+
+    next();
+})
+
 api.post('/checkEmail', function (req, res) {
     if (validator.validate(req.body.username)) {
         res.json({
@@ -112,6 +127,10 @@ api.post('/checkEmail', function (req, res) {
         });
     }
 });
+
+
+
+
 
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 //send url to updating pass
@@ -275,7 +294,9 @@ api.post('/login', function (req, res) {
 api.post('/logoutDate', function (req, res) {
 
     let myquery = {idUser: req.body.id, log_In: this.dateLogin};
+    console.log(myquery);
     let newvalues = {$set: {log_Out: (new Date().toLocaleString())}};
+    console.log(newvalues);
 
     UserLog.updateOne(myquery, newvalues, function (err) {
         if (err)

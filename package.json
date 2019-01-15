@@ -13,6 +13,7 @@
     "debug": "~2.6.9",
     "email-validator": "^2.0.4",
     "express": "^4.16.4",
+    "http-delayed-response": "0.0.4",
     "is-undefined": "^1.0.9",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.3.4",

@@ -15,7 +15,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/updateSecTel',
+            url: 'https://127.0.0.1:3001/updateSecTel',
             form: {
                 tel : req.body.tel,
                 security : req.body.security
@@ -33,7 +33,7 @@ module.exports = function (app, express) {
     api.post('/checkEmail', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/checkEmail',
+            url: 'https://127.0.0.1:3001/checkEmail',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -48,7 +48,7 @@ module.exports = function (app, express) {
     api.post('/userSendModifyPassToken', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/userSendModifyPassToken',
+            url: 'https://127.0.0.1:3001/userSendModifyPassToken',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -64,7 +64,7 @@ module.exports = function (app, express) {
     api.post('/signup', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/signup',
+            url: 'https://127.0.0.1:3001/signup',
             form: {
                 name: req.body.name,
                 username: req.body.username,
@@ -86,7 +86,7 @@ module.exports = function (app, express) {
     api.post('/login', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/login',
+            url: 'https://127.0.0.1:3001/login',
             form: {username: req.body.username, password: req.body.password}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -101,7 +101,7 @@ module.exports = function (app, express) {
     api.post('/logoutDate', function (req, res) {
         request.post({
             headers: {'content-type': 'application/x-www-form-urlencoded'},
-            url: 'https://agrevid.com:3001/logoutDate',
+            url: 'https://127.0.0.1:3001/logoutDate',
             form: {id: req.body.id}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -117,7 +117,7 @@ module.exports = function (app, express) {
     api.get('/userhistorys', function (req, res) {
         request.get(
             {
-                url: 'https://agrevid.com:3001/userhistorys',
+                url: 'https://127.0.0.1:3001/userhistorys',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
@@ -136,7 +136,7 @@ module.exports = function (app, express) {
         let token = req.params.token;
         request.get(
             {
-                url: 'https://agrevid.com:3001/isTokenValid/'+token+'',
+                url: 'https://127.0.0.1:3001/isTokenValid/'+token+'',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
@@ -157,7 +157,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/userhistorysParam',
+            url: 'https://127.0.0.1:3001/userhistorysParam',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -173,7 +173,7 @@ module.exports = function (app, express) {
     api.get('/me', function (req, res) {
         request.get(
             {
-                url: 'https://agrevid.com:3001/me',
+                url: 'https://127.0.0.1:3001/me',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
@@ -191,7 +191,7 @@ module.exports = function (app, express) {
     api.get('/users', function (req, res) {
         request.get(
             {
-                url: 'https://agrevid.com:3001/users',
+                url: 'https://127.0.0.1:3001/users',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
@@ -212,7 +212,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/user',
+            url: 'https://127.0.0.1:3001/user',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -228,7 +228,7 @@ module.exports = function (app, express) {
     api.get('/userLoggs', function (req, res) {
         request.get(
             {
-                url: 'https://agrevid.com:3001/userLoggs',
+                url: 'https://127.0.0.1:3001/userLoggs',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
@@ -249,7 +249,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/searchUserLoggs',
+            url: 'https://127.0.0.1:3001/searchUserLoggs',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -267,7 +267,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/deleteUser',
+            url: 'https://127.0.0.1:3001/deleteUser',
             form: {username: req.body.username}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -285,7 +285,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/updateUser',
+            url: 'https://127.0.0.1:3001/updateUser',
             form: {name: req.body.name, email: req.body.email, password : req.body.password}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -303,7 +303,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/updateUserPass',
+            url: 'https://127.0.0.1:3001/updateUserPass',
             form: {passwordOld: req.body.passwordOld, passwordNew: req.body.passwordNew}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -321,7 +321,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3001/updateUserPassToken',
+            url: 'https://127.0.0.1:3001/updateUserPassToken',
             form: {passwordNew: req.body.passwordNew, codev: req.body.codev}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -341,7 +341,7 @@ module.exports = function (app, express) {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
                 },
-                url: 'https://agrevid.com:3002/search/' + req.params.search + '',
+                url: 'https://127.0.0.1:3002/search/' + req.params.search + '',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -358,7 +358,7 @@ module.exports = function (app, express) {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                 },
-                url: 'https://agrevid.com:3002/searchYoutubeVideos/' + req.params.search +'/'+req.params.nextPageToken,
+                url: 'https://127.0.0.1:3002/searchYoutubeVideos/' + req.params.search +'/'+req.params.nextPageToken,
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -375,14 +375,18 @@ module.exports = function (app, express) {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                 },
-                url: 'https://agrevid.com:3002/searchVimeoVideos/' + req.params.search +'/'+req.params.page+'',
+                url: 'https://127.0.0.1:3002/searchVimeoVideos/' + req.params.search +'/'+req.params.page+'',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
                 console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 // console.log('body:', body); // Print the HTML for the Google homepage.
-                if (!error)
+                if (!error && response.statusCode !== 202){
+                    console.log(response.body);
                     res.json(JSON.parse(response.body));
+                }else{
+                    res.end();
+                }
             });
     })
 
@@ -394,7 +398,7 @@ module.exports = function (app, express) {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
                 },
-                url: 'https://agrevid.com:3002/watchYoutubeVideo/' + req.params.url + '',
+                url: 'https://127.0.0.1:3002/watchYoutubeVideo/' + req.params.url + '',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -412,7 +416,7 @@ module.exports = function (app, express) {
                     'content-type': 'application/x-www-form-urlencoded',
                     'x-access-token': req.headers['x-access-token']
                 },
-                url: 'https://agrevid.com:3002/watchVimeoVideo/' + req.params.url + '',
+                url: 'https://127.0.0.1:3002/watchVimeoVideo/' + req.params.url + '',
             }
             , function (error, response, body) {
                 console.log('error:', error); // Print the error if one occurred
@@ -429,7 +433,7 @@ module.exports = function (app, express) {
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
                     },
-                    url: 'https://agrevid.com:3002/watchYoutubeVideo/' + req.params.url + '',
+                    url: 'https://127.0.0.1:3002/watchYoutubeVideo/' + req.params.url + '',
                 }
                 , function (error, response, body) {
                     console.log('error:', error); // Print the error if one occurred
@@ -443,7 +447,7 @@ module.exports = function (app, express) {
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
                     },
-                    url: 'https://agrevid.com:3002/watchVimeoVideo/' + req.params.url + '',
+                    url: 'https://127.0.0.1:3002/watchVimeoVideo/' + req.params.url + '',
                 }
                 , function (error, response, body) {
                     console.log('error:', error); // Print the error if one occurred
@@ -462,7 +466,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3003/getPlaylist',
+            url: 'https://127.0.0.1:3003/getPlaylist',
             form: {idUser: req.body.idUser}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -480,7 +484,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3003/createPlaylist',
+            url: 'https://127.0.0.1:3003/createPlaylist',
             form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -498,7 +502,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3003/deletePlaylist',
+            url: 'https://127.0.0.1:3003/deletePlaylist',
             form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
@@ -519,7 +523,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3003/addVideoPlaylist',
+            url: 'https://127.0.0.1:3003/addVideoPlaylist',
             form: {
                 idUser: req.body.idUser,
                 namePlaylist: req.body.namePlaylist,
@@ -544,7 +548,7 @@ module.exports = function (app, express) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'x-access-token': req.headers['x-access-token']
             },
-            url: 'https://agrevid.com:3003/deleteVideoPlaylist',
+            url: 'https://127.0.0.1:3003/deleteVideoPlaylist',
             form: {idUser: req.body.idUser, namePlaylist: req.body.namePlaylist, video: req.body.video}
         }, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
