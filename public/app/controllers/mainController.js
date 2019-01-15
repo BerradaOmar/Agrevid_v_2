@@ -116,7 +116,7 @@ angular.module('mainCtrl', [])
 
                             if (data.success){
                                 $location.path('/');
-                                Notification.success('Vous êtes bien connecté !');
+                                ('Vous êtes bien connecté !');
                             }
                             else {
                                 vm.falseSubmitNb++;

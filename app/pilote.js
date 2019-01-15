@@ -262,6 +262,7 @@ module.exports = function (app, express) {
 
 
     api.post('/deleteUser', function (req, res) {
+
         request.post({
             headers: {
                 'content-type': 'application/x-www-form-urlencoded',

@@ -6,6 +6,7 @@
     "start": "node ./server"
   },
   "dependencies": {
+    "angular-confirm1": "^1.1.0",
     "angular-ui-notification": "^0.3.6",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
@@ -17,6 +18,7 @@
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.3.4",
     "morgan": "^1.9.1",
+    "ng-confirm": "^1.1.0",
     "nodemailer": "^4.6.8",
     "pump": "^3.0.0",
     "randomstring": "^1.1.5",

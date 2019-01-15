@@ -3,182 +3,77 @@
 
 
 
-    <div class="container" style="width: 40%">
-        <div class="row">
-            <div id="custom-search-input">
-                <div class="input-group col-md-12">
-                    <form ng-submit="user.getUser()">
-                        <input type="text" class="  search-query form-control" placeholder="Search"
-                               ng-model="user.userData.username"/>
-                    </form>
-
-                    <span class="input-group-btn">
-                                    <button class="btn btn-danger" type="button" ng-click="user.getUser()">
-                                        <span class=" glyphicon glyphicon-search"></span>
-                                    </button>
-                                </span>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div  ng-if="user.showMessage()" class="alert alert-warning" style="margin-left:35% ;width: 400px;height: auto;">
-        <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
-            ×</button>
-        <strong>Warning!</strong> {{user.msg}}.
-    </div>
 
     </br></br>
+    <div class="col-md-6" style="margin-left:250px">
+        <div class="panel panel-primary">
 
-    <div class="container" style="width: 50%">
 
+            <div class="panel-heading">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">detail
-                <div style=" float: left;"></div>
+                <div class="input-group col-md-12">
 
-                <div style=" float: right;">
+                    <input style="height: 25px;width: 150px;margin-left: 160px" placeholder="nom ou email " type="text" class="  search-query form-control" placeholder="Search"
+                           ng-change="user.getUsers()" ng-model="user.userData.username"/>
+                    <span class="glyphicon glyphicon-search"></span>
 
-                    <button ng-click="user.deleteUser()">
-                        <span class="glyphicon glyphicon-trash"></span>
+                    <button style="margin-left: 80px" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-plus-sign" title="add user"></span>
+                         add user
                     </button>
-                    <button data-toggle="modal" data-target="#myModal">
-                        <span class="glyphicon glyphicon-plus-sign"></span>
-
-                    </button>
-
-
                 </div>
+
+
             </div>
+            <div  >
 
-            <!--  <form ng-submit="user.deleteUser()">
-                  <button class="btn btn-danger" type="submit">Delete</button>
-              </form> -->
-            <div class="panel-body">
-                <div class="container" style="width:100%">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>email</th>
+                        <th>role</th>
+                        <th>action</th>
 
-                    <div class="alert alert-success" ng-if="user.isUserSuccessfullyDeleted()"
-                         style="width: 500px;height: 100px;">
-                        <button type="button" ng-click="user.okdelete()" class="close" data-dismiss="alert"
-                                aria-hidden="true">
-                            ×
-                        </button>
-                        <span class="glyphicon glyphicon-ok"></span> <strong>Success Message</strong>
-                        <hr class="message-inner-separator">
-                        <p>You successfully Deleted this user .</p>
-                    </div>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="u in user.usersByKey.slice(((user.currentPageUsers-1)*itemsPerPage), ((user.currentPageUsers)*itemsPerPage))
+">
+                        <td>{{u.name}}</td>
+                        <td>{{u.username}}</td>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="nom2">Nom:</label>
-                        <div class="col-sm-10" ng-repeat="each in user.userSearched">
-                            <input readonly type="text" class="form-control" id="nom2" name="nom2"
-                                   value="{{each.name}}">
-                        </div>
-                    </div>
-                    <br><br>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="email2">Email:</label>
-                        <div class="col-sm-10" ng-repeat="each in user.userSearched">
-                            <input readonly type="email" class="form-control" id="email2" name="email2"
-                                   value="{{each.username}}">
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                    <label class="control-label col-sm-2">role :</label>
-                    <div ng-repeat="each in user.userSearched">
-                        <div ng-if="each.admin"><p>Admin</p></div>
-                        <div ng-if="!each.admin"><p>Utilisateur</p></div>
-                    </div>
+                        <td ng-if="u.admin">admin</td>
+                        <td ng-if="!u.admin">user</td>
+                        <td><button   class="glyphicon glyphicon-remove" title="Delete" ng-click="confirmDelete(u)"></button>
+                            <button   class="glyphicon glyphicon-eye-open" data-toggle="modal" data-target="#myModalH" title="History" ng-click="user.getHistorySearchParam(u)"></button>
+                            <button   class="glyphicon glyphicon-log-out" data-toggle="modal" data-target="#myModalL" title="Loggs" ng-click="user.getLoggsParam(u)"></button>
+                        </td>
+                        <!--
+                        <td><button   class="glyphicon glyphicon-remove" ng-click="data.removedbCol(db.dbname)"></button></td>
+                           -->
+                    </tr>
 
+                    </tbody>
+                </table>
+                <div style="margin-left: 140px">
+                <pagination total-items="user.totalItemsUser"
+                            ng-model="user.currentPageUsers"
+                            max-size="maxSize"
+                            class="pagination-sm"
+                            boundary-links="true"
+                            rotate="false"
+                            items-per-page="itemsPerPage">
+
+                </pagination>
                 </div>
-
             </div>
         </div>
     </div>
+
 
     <br>
     <br>
-    <div class="container" style="width: 50%">
-
-        <div class="panel panel-default">
-            <div class="panel-heading">Historique</div>
-            <div class="panel-body" ng-if="user.hasHistorys()">
-                <div class="container" style="width:100%">
-
-
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>video</th>
-                            <th>date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="each in dataHistoriqueParam.slice(((currentPageHistoriqueParam-1)*itemsPerPage), ((currentPageHistoriqueParam)*itemsPerPage))">
-                            <td>{{each.request_Video}}</td>
-                            <td>{{each.request_date}}</td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                    <pagination total-items="totalItemsHistoriqueParam"
-                                ng-model="currentPageHistoriqueParam"
-                                max-size="maxSize"
-                                class="pagination-sm"
-                                boundary-links="true"
-                                rotate="false"
-                                items-per-page="itemsPerPage">
-
-                    </pagination>
-
-                </div>
-            </div>
-            <div class="panel-body" ng-if="!user.hasHistorys()"><p>No Historique</p></div>
-        </div>
-    </div>
-
-    <div class="container" style="width: 50%">
-
-        <div class="panel panel-default">
-            <div class="panel-heading">Logs</div>
-            <div class="panel-body" ng-if="user.hasLoggs()">
-                <div class="container" style="width:100%">
-
-
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-
-                            <th>connexion</th>
-                            <th>deconexion</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="each in dataLogss.slice(((currentPageLoggs-1)*itemsPerPage), ((currentPageLoggs)*itemsPerPage))">
-
-                            <td>{{each.log_In}}</td>
-                            <td>{{each.log_Out}}</td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                    <pagination total-items="totalItemsDataLogss"
-                                ng-model="currentPageLoggs"
-                                max-size="maxSize"
-                                class="pagination-sm"
-                                boundary-links="true"
-                                rotate="false"
-                                items-per-page="itemsPerPage">
-
-                    </pagination>
-                </div>
-
-            </div>
-            <div class="panel-body" ng-if="!user.hasLoggs()"><p>No Loggs</p></div>
-        </div>
-    </div>
 
 
     <!-- Modal -->
@@ -268,5 +163,264 @@
 
         </div>
     </div>
+    <div id="myModalH" class="modal fade" role="dialog">
+        <div class="container" style="width: 50%;padding-top: 150px">
 
+            <div class="panel panel-default">
+                <div class="panel-heading">Historique</div>
+                <div class="panel-body" ng-if="user.hasHistorys()">
+                    <div class="container" style="width:100%">
+
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>video</th>
+                                <th>date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="each in dataHistoriqueParam.slice(((currentPageHistoriqueParam-1)*itemsPerPage), ((currentPageHistoriqueParam)*itemsPerPage))">
+                                <td>{{each.request_Video}}</td>
+                                <td>{{each.request_date}}</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                        <pagination total-items="totalItemsHistoriqueParam"
+                                    ng-model="currentPageHistoriqueParam"
+                                    max-size="maxSize"
+                                    class="pagination-sm"
+                                    boundary-links="true"
+                                    rotate="false"
+                                    items-per-page="itemsPerPage">
+
+                        </pagination>
+
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="!user.hasHistorys()"><p>No Historique</p></div>
+            </div>
+        </div>
+    </div>
+    <div id="myModalL" class="modal fade" role="dialog">
+        <div class="container" style="width: 50%;padding-top: 150px">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Logs</div>
+                <div class="panel-body" ng-if="user.hasLoggs()">
+                    <div class="container" style="width:100%">
+
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+
+                                <th>connexion</th>
+                                <th>deconexion</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="each in dataLogss.slice(((currentPageLoggs-1)*itemsPerPage), ((currentPageLoggs)*itemsPerPage))">
+
+                                <td>{{each.log_In}}</td>
+                                <td>{{each.log_Out}}</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                        <pagination total-items="totalItemsDataLogss"
+                                    ng-model="currentPageLoggs"
+                                    max-size="maxSize"
+                                    class="pagination-sm"
+                                    boundary-links="true"
+                                    rotate="false"
+                                    items-per-page="itemsPerPage">
+
+                        </pagination>
+                    </div>
+
+                </div>
+                <div class="panel-body" ng-if="!user.hasLoggs()"><p>No Loggs</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- search user
+       <div class="container" style="width: 40%">
+           <div class="row">
+               <div id="custom-search-input">
+                   <div class="input-group col-md-12">
+                       <form ng-submit="user.getUser()">
+                           <input type="text" class="  search-query form-control" placeholder="Search"
+                                  ng-change="user.getUsers()" ng-model="user.userData.username"/>
+                       </form>
+
+                       <span class="input-group-btn">
+                                       <button class="btn btn-danger" type="button" ng-click="user.getUser()">
+                                           <span class=" glyphicon glyphicon-search"></span>
+                                       </button>
+                                   </span>
+
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <div  ng-if="user.showMessage()" class="alert alert-warning" style="margin-left:35% ;width: 400px;height: auto;">
+           <button type="button" ng-click="user.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
+               ×</button>
+           <strong>Warning!</strong> {{user.msg}}.
+       </div>
+   -->
+    <!-- detail user ancien methode
+
+        <div class="container" style="width: 50%">
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">detail
+                    <div style=" float: left;"></div>
+
+                    <div style=" float: right;">
+
+                        <button ng-click="user.deleteUser()">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <button data-toggle="modal" data-target="#myModal">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+
+                        </button>
+
+
+                    </div>
+                </div>
+
+
+                <div class="panel-body">
+                    <div class="container" style="width:100%">
+
+                        <div class="alert alert-success" ng-if="user.isUserSuccessfullyDeleted()"
+                             style="width: 500px;height: 100px;">
+                            <button type="button" ng-click="user.okdelete()" class="close" data-dismiss="alert"
+                                    aria-hidden="true">
+                                ×
+                            </button>
+                            <span class="glyphicon glyphicon-ok"></span> <strong>Success Message</strong>
+                            <hr class="message-inner-separator">
+                            <p>You successfully Deleted this user .</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="nom2">Nom:</label>
+                            <div class="col-sm-10" ng-repeat="each in user.userSearched">
+                                <input readonly type="text" class="form-control" id="nom2" name="nom2"
+                                       value="{{each.name}}">
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email2">Email:</label>
+                            <div class="col-sm-10" ng-repeat="each in user.userSearched">
+                                <input readonly type="email" class="form-control" id="email2" name="email2"
+                                       value="{{each.username}}">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <label class="control-label col-sm-2">role :</label>
+                        <div ng-repeat="each in user.userSearched">
+                            <div ng-if="each.admin"><p>Admin</p></div>
+                            <div ng-if="!each.admin"><p>Utilisateur</p></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+      </div>
+  -->
+    <!--
+    panel hitorique et logs ancien methode
+     <div class="container" style="width: 50%">
+
+         <div class="panel panel-default">
+             <div class="panel-heading">Historique</div>
+             <div class="panel-body" ng-if="user.hasHistorys()">
+                 <div class="container" style="width:100%">
+
+
+                     <table class="table table-striped">
+                         <thead>
+                         <tr>
+                             <th>video</th>
+                             <th>date</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         <tr ng-repeat="each in dataHistoriqueParam.slice(((currentPageHistoriqueParam-1)*itemsPerPage), ((currentPageHistoriqueParam)*itemsPerPage))">
+                             <td>{{each.request_Video}}</td>
+                             <td>{{each.request_date}}</td>
+                         </tr>
+
+                         </tbody>
+                     </table>
+                     <pagination total-items="totalItemsHistoriqueParam"
+                                 ng-model="currentPageHistoriqueParam"
+                                 max-size="maxSize"
+                                 class="pagination-sm"
+                                 boundary-links="true"
+                                 rotate="false"
+                                 items-per-page="itemsPerPage">
+
+                     </pagination>
+
+                 </div>
+             </div>
+             <div class="panel-body" ng-if="!user.hasHistorys()"><p>No Historique</p></div>
+         </div>
+     </div>
+
+     <div class="container" style="width: 50%">
+
+         <div class="panel panel-default">
+             <div class="panel-heading">Logs</div>
+             <div class="panel-body" ng-if="user.hasLoggs()">
+                 <div class="container" style="width:100%">
+
+
+                     <table class="table table-striped">
+                         <thead>
+                         <tr>
+
+                             <th>connexion</th>
+                             <th>deconexion</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         <tr ng-repeat="each in dataLogss.slice(((currentPageLoggs-1)*itemsPerPage), ((currentPageLoggs)*itemsPerPage))">
+
+                             <td>{{each.log_In}}</td>
+                             <td>{{each.log_Out}}</td>
+                         </tr>
+
+                         </tbody>
+                     </table>
+                     <pagination total-items="totalItemsDataLogss"
+                                 ng-model="currentPageLoggs"
+                                 max-size="maxSize"
+                                 class="pagination-sm"
+                                 boundary-links="true"
+                                 rotate="false"
+                                 items-per-page="itemsPerPage">
+
+                     </pagination>
+                 </div>
+
+             </div>
+             <div class="panel-body" ng-if="!user.hasLoggs()"><p>No Loggs</p></div>
+         </div>
+     </div>
+ -->
 </div>
