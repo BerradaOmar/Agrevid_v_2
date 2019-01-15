@@ -2,7 +2,7 @@ module.exports = {
     "database": "mongodb://localhost:27017/userstory",
     "userHistoryDb" : "mongodb://localhost:27017/user_history_db",
     "userLogDb" : "mongodb://localhost:27017/user_log_db",
-    "userPlaylistDb" : "mongodb://localhost:27017/user_playlist_db",
+    "userPlaylistDb" : "mongodb://localhost:27017/plalistdb",
     "port": process.env.PORT || 3000,
     "secretKey" : "YourSecretKey",
     "CLIENT_ID" : "a124ef69255390201ab6ceb4704bfdd9153170c0",

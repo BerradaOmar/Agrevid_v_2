@@ -1,4 +1,4 @@
-angular.module('MyApp', ['appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'userService', 'videoCtrl', 'videoService', 'playlistCtrl', 'playlistService', 'ui.bootstrap', 'blockUI', 'ui-notification'])
+angular.module('MyApp', ['cp.ngConfirm','appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'userService', 'videoCtrl', 'videoService', 'playlistCtrl', 'playlistService', 'ui.bootstrap', 'blockUI', 'ui-notification'])
 
     .config(function ($httpProvider) {
         $httpProvider.interceptors.push('AuthInterceptor');

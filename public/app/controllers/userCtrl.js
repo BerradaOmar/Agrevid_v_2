@@ -1,6 +1,6 @@
 angular.module('userCtrl', ['userService'])
 
-    .controller('UserController', function (User, Auth, AuthToken, $location, $window, $scope, $routeParams, $timeout) {
+    .controller('UserController', function (User, Auth, AuthToken, $location, $window, $scope, $routeParams, $timeout,Notification,$ngConfirm) {
         let vm = this;
         vm.isUpdate = false;
         vm.historys = [];
@@ -22,6 +22,7 @@ angular.module('userCtrl', ['userService'])
         $scope.currentPage = 1;
         $scope.currentPageHistoriqueParam = 1;
         $scope.currentPageLoggs = 1;
+        vm.currentPageUsers = 1;
         $scope.itemsPerPage = 5;
         $scope.maxSize = 5; //Number of pager buttons to show
 
@@ -31,21 +32,85 @@ angular.module('userCtrl', ['userService'])
         //get access security
         $scope.hasSecurity = $routeParams.code;
 
+
+        $scope.confirmDelete = function(user){
+            $scope.name = "êtes-vous sûr de supprimer l'utilisateur "+user.username;
+            $ngConfirm({
+                title: "Attention" ,
+                content: $scope.name,
+                scope: $scope,
+                buttons: {
+                    supprimer: {
+                        text: 'Supprimer',
+                        btnClass: 'btn-primary',
+                        action: function(scope, button){
+
+                            vm.deleteUser(user);
+                            $scope.name = "L'utilisateur "+user.username+" est bien supprimé !";
+                        }
+                    },
+                    close: function(scope, button){
+                        // closes the modal
+                    },
+                }
+            });
+        }
+
+
         User.all()
             .success(function (data) {
                 vm.users = data;
             })
+        vm.getUsers = function(){
+            vm.usersByKey = [];
+
+            angular.forEach(vm.users,function (elem) {
+                let username = elem.username;
+                let name = elem.name;
+                if(username.indexOf(vm.userData.username) != -1 ||name.indexOf(vm.userData.username) != -1 ){
+
+                    vm.usersByKey.push(elem);
+                }
+                vm.totalItemsUser = vm.usersByKey.length;
+
+            })
+
+
+        }
+        vm.deleteFront = function(user){
+            vm.users.splice(vm.users.indexOf(user), 1);
+            vm.usersByKey.splice(vm.usersByKey.indexOf(user), 1);
+        }
 
         vm.hasSecurity = function () {
             if ($scope.hasSecurity == 1) return true;
             else return false;
         }
 
+        vm.getHistorySearchParam =function(user){
+            User.getHistorySearchParam(user)
+                .success(function (data) {
+                    vm.historys = data;
+                    $scope.dataHistoriqueParam = data;
+                    $scope.totalItemsHistoriqueParam = vm.historys.length;
+                })
+        }
+
+        vm.getLoggsParam = function(user){
+            User.getLoggsParam(user)
+                .success(function (data) {
+                    vm.loggs = data;
+                    $scope.dataLogss = data;
+                    $scope.totalItemsDataLogss = vm.loggs.length;
+
+                })
+        }
+
         vm.getUser = function () {
             User.user(vm.userData).success(function (data) {
                 if (data.length === 0) {
                     vm.msg = "Utilisateur introuvable";
-                    vm.throws = true;
+                    Notification.error(vm.msg);
                 }
                 vm.userSearched = data;
                 $scope.is_Admin = vm.userSearched.admin;
@@ -107,10 +172,19 @@ angular.module('userCtrl', ['userService'])
                 $scope.totalItemsHistoriqueUser = vm.HistorySearch.length;
             });
 
-        vm.deleteUser = function () {
+
+
+        vm.deleteUser= function (user) {
+
+
+            vm.userData.username = user.username;
             User.delete(vm.userData).success(function (resp) {
                 vm.successDelete = resp.success;
+                vm.deleteFront(user);
+                Notification.success("L'utilisateur "+user.username+" est bien supprimé !");
+
             });
+
 
         };
 
@@ -142,20 +216,16 @@ angular.module('userCtrl', ['userService'])
             if(vm.userData.name){
                 if(Auth.checkInput(vm.userData.name)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
-                    vm.throws=true;
-                    $timeout(function () {
-                        vm.throws = false;
-                    }, 3000);
-                    return;
+                    Notification.error(vm.msg);
+
+
                 }
             }
             if(vm.userData.email){
                 if(Auth.checkInput(vm.userData.email)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
-                    vm.throws=true;
-                    $timeout(function () {
-                        vm.throws = false;
-                    }, 3000);
+                    Notification.error(vm.msg);
+
                     return;
                 }
             }
@@ -163,30 +233,22 @@ angular.module('userCtrl', ['userService'])
             if(vm.userData.password){
                 if(Auth.checkInput(vm.userData.password)){
                     vm.msg='Le champ de saisie ne peut pas contenir de "$" ';
-                    vm.throws=true;
-                    $timeout(function () {
-                        vm.throws = false;
-                    }, 3000);
+                    Notification.error(vm.msg);
                     return;
                 }
             }
 
 
-            $timeout(function () {
-                if (vm.updateTrue) {
-                    $window.localStorage.setItem('token', '');
-                    $location.path('/login');
-                }
-            }, 5000);
+
 
             User.update(vm.userData).success(function (message) {
 
                 vm.updateTrue = message.success;
                 vm.msg = message.message;
-                vm.throws = true;
 
-                //run!!
-                $timeout(timer, 1000);
+
+                Notification.success(vm.msg);
+
 
             })
         };
@@ -199,19 +261,21 @@ angular.module('userCtrl', ['userService'])
         vm.updateUserPass = function () {
             if(Auth.checkInput(vm.userData.passwordOld) || Auth.checkInput(vm.userData.passwordNew)){
                 vm.msg='Le champ de saisie ne peut pas contenir "$" ';
-                vm.throws=true;
-                $timeout(function () {
-                    vm.throws = false;
-                }, 3000);
+                Notification.error(vm.msg);
+
+
                 return;
             }
 
             User.updateUserPass(vm.userData).success(function (message) {
                 vm.oldPass = message.success;
                 vm.msg = message.message;
-                vm.throws = true;
+
+
+
                 $window.localStorage.setItem('token', '');
                 $location.path('/login');
+                Notification.success(vm.msg);
             });
         };
 
@@ -228,7 +292,8 @@ angular.module('userCtrl', ['userService'])
                 $window.localStorage.setItem('token', '');
 
                 $location.path('/login');
-                $window.alert("votre compte a bien été modifié. Appuyez sur ok pour vous connectez.");
+                //$window.alert("votre compte a bien été modifié. Appuyez sur ok pour vous connectez.");
+                Notification.success("votre compte a bien été modifié.");
             });
 
         };
@@ -238,7 +303,8 @@ angular.module('userCtrl', ['userService'])
                  vm.msg = data.message;
                  console.log(data.success);
                 vm.secUpdatedSuccess = data.success;
-                vm.throws = true;
+                Notification.success(vm.msg);
+
             })
         }
 
@@ -249,7 +315,7 @@ angular.module('userCtrl', ['userService'])
     })
 
 
-    .controller('UserCreateController', function (User, $location, $window,Auth) {
+    .controller('UserCreateController', function (User, $location, $window,Auth,Notification) {
         let vm = this;
          vm.errorsignup = '';
          vm.throws =false;
@@ -289,10 +355,7 @@ angular.module('userCtrl', ['userService'])
             if(Auth.checkInput(vm.userData.name) || Auth.checkInput(vm.userData.username) || Auth.checkInput(vm.userData.tel) || Auth.checkInput(vm.userData.password)){
                 console.log('injection detected');
                 vm.error='Le champ de saisie ne peut pas contenir de "$" ';
-                vm.throws=true;
-                $timeout(function () {
-                    vm.throws = false;
-                }, 3000);
+                Notification.error(vm.error);
                 return;
             }
 
@@ -304,28 +367,33 @@ angular.module('userCtrl', ['userService'])
                 let regExLettres = new RegExp('^[a-zA-Z]*$');
 
                 if (!regExLettres.test(vm.userData.name)) {
-                    $window.alert("le nom ne peut contenir que des lettres !");
+                   // $window.alert("le nom ne peut contenir que des lettres !");
+                    Notification.error("le nom ne peut contenir que des lettres !");
                     return;
                 }
 
                 if (!response.checked) {
-                    $window.alert("Email invalide !");
+                  //  $window.alert("Email invalide !");
+                    Notification.error("Email invalide !");
                     return;
                 }
 
                 if (vm.userData.password.length < 8) {
-                    $window.alert("Le mot de passe doit contenir au moins 8 charactères");
+                  //  $window.alert("Le mot de passe doit contenir au moins 8 charactères");
+                    Notification.error("Le mot de passe doit contenir au moins 8 charactères");
                     return;
                 }
 
                 for (let i = 0; i < charInterdits.length; i++) {
                     if (vm.userData.password.includes(charInterdits[i])) {
                         if (charInterdits[i] == " ") {
-                            $window.alert("Le mot de passe ne doit pas contenir des espaces");
+                            //$window.alert("Le mot de passe ne doit pas contenir des espaces");
+                            Notification.error("Le mot de passe ne doit pas contenir des espaces");
                             return;
                         }
 
-                        $window.alert("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
+                       // $window.alert("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
+                        Notification.error("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
                         return;
                     }
                 }
@@ -337,12 +405,14 @@ angular.module('userCtrl', ['userService'])
                 }
 
                 if (majCheck == false) {
-                    $window.alert("Le mot de passe doit contenir au moins une majuscule !");
+                   // $window.alert("Le mot de passe doit contenir au moins une majuscule !");
+                    Notification.error("Le mot de passe doit contenir au moins une majuscule !");
                     return;
                 }
 
                 if (vm.userData.password != vm.userData.passConfirm) {
-                    $window.alert("Les mots de passes ne sont pas identiques !");
+                 //   $window.alert("Les mots de passes ne sont pas identiques !");
+                    Notification.error("Les mots de passes ne sont pas identiques !");
                     return;
                 }
 
@@ -359,10 +429,8 @@ angular.module('userCtrl', ['userService'])
                        else {
 
                            vm.errorsignup = 'email déja utilisé par un autre utilisateur!';
-                           vm.throws=true;
-                           $timeout(function () {
-                               vm.throws = false;
-                           }, 3000);
+                           Notification.error(vm.errorsignup);
+
 
                        }
                     })
@@ -381,28 +449,34 @@ angular.module('userCtrl', ['userService'])
                 let regExLettres = new RegExp('^[a-zA-Z]*$');
 
                 if (!regExLettres.test(vm.userNew.name)) {
-                    $window.alert("le nom ne peut contenir que des lettres !");
+                 //   $window.alert("le nom ne peut contenir que des lettres !");
+                    Notification.error("le nom ne peut contenir que des lettres !");
                     return;
                 }
 
                 if (!response.checked) {
-                    $window.alert("Email invalide !");
+                 //  $window.alert("Email invalide !");
+                    Notification.error("Email invalide !");
+
                     return;
                 }
 
                 if (vm.userNew.password.length < 8) {
-                    $window.alert("Le mot de passe doit contenir au moins 8 charactères");
+                    //$window.alert("Le mot de passe doit contenir au moins 8 charactères");
+                    Notification.error("Le mot de passe doit contenir au moins 8 charactères");
                     return;
                 }
 
                 for (let i = 0; i < charInterdits.length; i++) {
                     if (vm.userNew.password.includes(charInterdits[i])) {
                         if (charInterdits[i] == " ") {
-                            $window.alert("Le mot de passe ne doit pas contenir des espaces");
+                           // $window.alert("Le mot de passe ne doit pas contenir des espaces");
+                            Notification.error("Le mot de passe ne doit pas contenir des espaces");
                             return;
                         }
 
-                        $window.alert("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
+                        //$window.alert("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
+                        Notification.error("Le mot de passe ne doit pas contenir des " + charInterdits[i]);
                         return;
                     }
                 }
@@ -414,12 +488,14 @@ angular.module('userCtrl', ['userService'])
                 }
 
                 if (majCheck == false) {
-                    $window.alert("Le mot de passe doit contenir au moins une majuscule !");
+                  //  $window.alert("Le mot de passe doit contenir au moins une majuscule !");
+                    Notification.error("Le mot de passe doit contenir au moins une majuscule !");
                     return;
                 }
 
                 if (vm.userNew.password != vm.userNew.passConfirm) {
-                    $window.alert("Les mots de passes ne sont pas identiques !" + vm.userNew.admin);
+                  //  $window.alert("Les mots de passes ne sont pas identiques !" + vm.userNew.admin);
+                    Notification.error("Les mots de passes ne sont pas identiques !" + vm.userNew.admin);
                     return;
                 }
 
@@ -434,6 +510,7 @@ angular.module('userCtrl', ['userService'])
             })
 
         }
+
 
 
     })
