@@ -1,4 +1,5 @@
 <div ng-if="main.loggedIn">
+
     <div>
         <div>
             <div>
@@ -9,23 +10,55 @@
             </div>
 
             <!-- THE PLAYLIST -->
-            <div ng-repeat="x in array">
-                <h3>Playlist : {{x.namePlaylist}} </h3>
-                <button ng-click="playlist.deletePlaylist(x.namePlaylist)" class="btn btn-success"> supprimer playlist
-                </button>
-                <div class="vid-list-container">
-                    <div class="vid-list">
-                        <div class="vid-item" ng-repeat="y in x.playlist">
-                            <div ng-click="playlist.goToVideoPlaylist(x,y)">
-                                <div class="thumb"><img src="{{y.image}}" ></div>
-                                <div class="desc"> {{y.title}}</div>
-                                <div> source : {{y.source}}</div>
+            <!--<div style="overflow-y: auto; height: 600px">
+                <div ng-repeat="x in array track by $index">
+                    <h3>Playlist : {{x.namePlaylist}} </h3>
+                    <button ng-click="playlist.deletePlaylist(x.namePlaylist)" class="btn btn-success"> supprimer
+                        playlist
+                    </button>
+                    <div class="vid-list-container">
+                        <div class="vid-list">
+                            <div class="vid-item" ng-repeat="y in x.playlist">
+                                <div ng-click="playlist.goToVideoPlaylist(x,y)">
+                                    <div class="thumb"><img src="{{y.image}}"></div>
+                                    <div class="desc"> {{y.title}}</div>
+                                    <div> source : {{y.source}}</div>
+                                </div>
+                                <button ng-click="playlist.deleteVideo(x,y)" class="close"> x</button>
                             </div>
-                            <button ng-click="playlist.deleteVideo(x,y)" class="close"> x</button>
                         </div>
                     </div>
                 </div>
+            </div>-->
+            <div ng-cloak >
+                <md-content >
+                    <md-tabs class="md-primary" style="overflow: auto" >
+                        <div  ng-repeat="x in array" >
+                            <md-tab id="labelTab" label="{{x.namePlaylist}}" >
+                                <md-content class="md-padding" >
+                                    <button ng-click="playlist.deletePlaylist(x.namePlaylist)" class="btn btn-success"> supprimer
+                                        playlist
+                                    </button>
+                                    <div class="vid-list-container" style="overflow: auto" >
+                                        <div class="vid-list" ng-style="{width: x.playlist.length*150 + 'px'}">
+                                            <div class="vid-item" ng-repeat="y in x.playlist">
+                                                <div ng-click="playlist.goToVideoPlaylist(x,y)">
+                                                    <div class="thumb"><img src="{{y.image}}"></div>
+                                                    <div class="desc"> {{y.title}}</div>
+                                                    <div> source : {{y.source}}</div>
+                                                </div>
+                                                <button ng-click="playlist.deleteVideo(x,y)" class="close"> x</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-content>
+                            </md-tab>
+                        </div>
+
+                    </md-tabs>
+                </md-content>
             </div>
+
 
 
             <!-- Modal -->
@@ -43,14 +76,17 @@
                         <div class="modal-body ">
                             <div class="input-group container">
                                 <div class="text-left">
-                                    <div  ng-if="playlist.showMessage()" class="alert alert-warning" style="margin-left:0% ;width: 360px;height: auto;">
-                                        <button type="button" ng-click="playlist.stopMessage()" class="close" data-dismiss="alert" aria-hidden="true">
-                                            ×</button>
-                                        <strong>Warning!  </strong>{{playlist.error}}
+                                    <div ng-if="playlist.showMessage()" class="alert alert-warning"
+                                         style="margin-left:0% ;width: 360px;height: auto;">
+                                        <button type="button" ng-click="playlist.stopMessage()" class="close"
+                                                data-dismiss="alert" aria-hidden="true">
+                                            ×
+                                        </button>
+                                        <strong>Warning! </strong>{{playlist.error}}
                                     </div>
                                     <form class="form-signin" method="post" ng-submit="playlist.createUserPlaylist()">
                                         nouvelle playlist : <input type="text" name="namePlaylist"
-                                                              ng-model="playlist.playlistData.namePlaylist">
+                                                                   ng-model="playlist.playlistData.namePlaylist">
                                         <button type="submit" class="btn btn-success">ajouter Playlist</button>
                                     </form>
                                 </div>

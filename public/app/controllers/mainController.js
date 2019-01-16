@@ -22,8 +22,8 @@ angular.module('mainCtrl', [])
             })
             Auth.getUser()
                 .then(function (data) {
-                    vm.user = data.data;
-                    vm.isAdmin = data.data.admin;
+                    vm.user = data;
+                    vm.isAdmin = data.admin;
                 });
         });
 
@@ -41,7 +41,7 @@ angular.module('mainCtrl', [])
             vm.processing = true;
             vm.error = '';
             if (vm.falseSubmitNb < 3) {
-                User.checkEmail(vm.loginData).success(function (res) {
+                User.checkEmail(vm.loginData).then(function (res) {
                     let response = res;
                     let charInterdits = ["\"", " "];
                     let majuscules = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -106,7 +106,7 @@ angular.module('mainCtrl', [])
 
 
                     Auth.login(vm.loginData.username, vm.loginData.password)
-                        .success(function (data) {
+                        .then(function (data) {
                             vm.processing = false;
 
                             Auth.getUser()
@@ -135,7 +135,7 @@ angular.module('mainCtrl', [])
 
 
         vm.doLogout = function () {
-            Auth.logout(vm.user).success(function (res) {
+            Auth.logout(vm.user).then(function (res) {
                 let response = res;
 
                 vm.isAdmin = false;
@@ -151,7 +151,7 @@ angular.module('mainCtrl', [])
 
         vm.userSendModifyPass = function () {
 
-            Auth.userSendModifyPass(vm.data).success(function (res) {
+            Auth.userSendModifyPass(vm.data).then(function (res) {
                 vm.message = res.message;
                 vm.succed = res.succed;
                 vm.submitSendPass = true;

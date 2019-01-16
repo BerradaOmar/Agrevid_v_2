@@ -11,14 +11,16 @@ angular.module('authService', [])
                 username: username,
                 password: password
             })
-                .success(function (data) {
-                    AuthToken.setToken(data.token);
-                    return data;
+                .then(function (data) {
+                    AuthToken.setToken(data.data.token);
+                    return data.data;
                 })
         }
 
         authFactory.logout = function (user) {
-            return $http.post('/pilote/logoutDate', user);
+            return $http.post('/pilote/logoutDate', user).then(function (res) {
+                return res.data;
+            });
         }
 
 
@@ -30,12 +32,16 @@ angular.module('authService', [])
         }
 
         authFactory.userSendModifyPass = function (data) {
-            return $http.post('/pilote/userSendModifyPassToken', data);
+            return $http.post('/pilote/userSendModifyPassToken', data).then(function (res) {
+                return res.data;
+            });
         }
 
         authFactory.getUser = function () {
             if (AuthToken.getToken()){
-                return $http.get('/pilote/me');
+                return $http.get('/pilote/me').then(function (res) {
+                    return res.data;
+                });
             }
             else
                 return $q.reject({message: "User has no token"});
@@ -67,8 +73,9 @@ angular.module('authService', [])
         }
 
         authTokenFactory.setToken = function (token) {
-            if (token)
+            if (token){
                 $window.localStorage.setItem('token', token);
+            }
             else
                 $window.localStorage.removeItem('token');
         }

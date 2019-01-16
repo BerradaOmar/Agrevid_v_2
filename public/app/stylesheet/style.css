@@ -1,3 +1,11 @@
+/*Horizontal playlist*/
+md-content md-tabs{
+    height: 500px;
+    overflow-x: scroll;
+}
+
+/**********************/
+
 body {
     background-image: url("../images/background_principal.jpg");
     background-repeat:no-repeat;
@@ -196,13 +204,12 @@ a {
 /*  VIDEOS PLAYLIST
  ############################### */
 .vid-list-container {
-    width: 70%;
+    /*width: 70%;
     margin-top: 5px;
     margin-left: 14%;
     padding-bottom: auto;
-    background-color: whitesmoke;
-    overflow-y: hidden;
-
+    background-color: whitesmoke;*/
+    overflow: hidden;
 }
 
 div#parent {
@@ -213,14 +220,14 @@ div#parent {
 div#content {
     width:auto;
     padding:20px;
-    overflow-x:auto;
+    overflow-x:hidden;
 }
 
 .vid-list {
-    width: 2000px;
     position: relative;
     top:0;
     left: 0;
+
 }
 
 .vid-item {
@@ -334,4 +341,5 @@ div#content {
     margin-top: -20px;
     font-size: 15px;
 }
+
 

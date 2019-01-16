@@ -58,7 +58,7 @@ angular.module('userCtrl', ['userService'])
 
 
         User.all()
-            .success(function (data) {
+            .then(function (data) {
                 vm.users = data;
             })
         vm.getUsers = function(){
@@ -89,7 +89,7 @@ angular.module('userCtrl', ['userService'])
 
         vm.getHistorySearchParam =function(user){
             User.getHistorySearchParam(user)
-                .success(function (data) {
+                .then(function (data) {
                     vm.historys = data;
                     $scope.dataHistoriqueParam = data;
                     $scope.totalItemsHistoriqueParam = vm.historys.length;
@@ -98,7 +98,7 @@ angular.module('userCtrl', ['userService'])
 
         vm.getLoggsParam = function(user){
             User.getLoggsParam(user)
-                .success(function (data) {
+                .then(function (data) {
                     vm.loggs = data;
                     $scope.dataLogss = data;
                     $scope.totalItemsDataLogss = vm.loggs.length;
@@ -107,7 +107,7 @@ angular.module('userCtrl', ['userService'])
         }
 
         vm.getUser = function () {
-            User.user(vm.userData).success(function (data) {
+            User.user(vm.userData).then(function (data) {
                 if (data.length === 0) {
                     vm.msg = "Utilisateur introuvable";
                     Notification.error(vm.msg);
@@ -118,14 +118,14 @@ angular.module('userCtrl', ['userService'])
             })
 
             User.getHistorySearchParam(vm.userData)
-                .success(function (data) {
+                .then(function (data) {
                     vm.historys = data;
                     $scope.dataHistoriqueParam = data;
                     $scope.totalItemsHistoriqueParam = vm.historys.length;
                 })
 
             User.getLoggsParam(vm.userData)
-                .success(function (data) {
+                .then(function (data) {
                     vm.loggs = data;
                     $scope.dataLogss = data;
                     $scope.totalItemsDataLogss = vm.loggs.length;
@@ -166,7 +166,7 @@ angular.module('userCtrl', ['userService'])
 
 
         User.getHistorySearch()
-            .success(function (data) {
+            .then(function (data) {
                 vm.HistorySearch = data;
                 $scope.dataHistoriqueUser = data;
                 $scope.totalItemsHistoriqueUser = vm.HistorySearch.length;
@@ -178,7 +178,7 @@ angular.module('userCtrl', ['userService'])
 
 
             vm.userData.username = user.username;
-            User.delete(vm.userData).success(function (resp) {
+            User.delete(vm.userData).then(function (resp) {
                 vm.successDelete = resp.success;
                 vm.deleteFront(user);
                 Notification.success("L'utilisateur "+user.username+" est bien supprimé !");
@@ -241,7 +241,7 @@ angular.module('userCtrl', ['userService'])
 
 
 
-            User.update(vm.userData).success(function (message) {
+            User.update(vm.userData).then(function (message) {
 
                 vm.updateTrue = message.success;
                 vm.msg = message.message;
@@ -267,7 +267,7 @@ angular.module('userCtrl', ['userService'])
                 return;
             }
 
-            User.updateUserPass(vm.userData).success(function (message) {
+            User.updateUserPass(vm.userData).then(function (message) {
                 vm.oldPass = message.success;
                 vm.msg = message.message;
 
@@ -287,7 +287,7 @@ angular.module('userCtrl', ['userService'])
         vm.updateUserPassToken = function () {
 
 
-            User.updateUserPassToken(vm.userData).success(function () {
+            User.updateUserPassToken(vm.userData).then(function () {
 
                 $window.localStorage.setItem('token', '');
 
@@ -299,7 +299,7 @@ angular.module('userCtrl', ['userService'])
         };
 
         vm.updateSecTel = function () {
-            User.updateSecTel(vm.userData).success(function (data) {
+            User.updateSecTel(vm.userData).then(function (data) {
                  vm.msg = data.message;
                  console.log(data.success);
                 vm.secUpdatedSuccess = data.success;
@@ -359,7 +359,7 @@ angular.module('userCtrl', ['userService'])
                 return;
             }
 
-            User.checkEmail(vm.userData).success(function (res) {
+            User.checkEmail(vm.userData).then(function (res) {
                 let response = res;
                 let charInterdits = ["\"", " "];
                 let majuscules = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -441,7 +441,7 @@ angular.module('userCtrl', ['userService'])
         vm.addUser = function () {
             vm.message = '';
 
-            User.checkEmail(vm.userNew).success(function (res) {
+            User.checkEmail(vm.userNew).then(function (res) {
                 let response = res;
                 let charInterdits = ["\"", " "];
                 let majuscules = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];

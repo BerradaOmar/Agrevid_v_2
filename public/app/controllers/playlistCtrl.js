@@ -11,6 +11,9 @@ angular.module('playlistCtrl', ['playlistService'])
         vm.playlistData = {};
 
 
+
+
+
         //pour gerer l'affichage des notifications
         vm.showMessage = function () {
             return vm.throws;
@@ -48,7 +51,7 @@ angular.module('playlistCtrl', ['playlistService'])
             }
 
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
+                vm.userId = response.id;
 
                 Playlist.create(vm.userId, vm.playlistData.namePlaylist)
                     .then(function (response) {
@@ -64,7 +67,7 @@ angular.module('playlistCtrl', ['playlistService'])
         vm.getListPlaylist = function () {
 
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
+                vm.userId = response.id;
                 $scope.array = [];
                 $scope.arrayplaylist = [];
                 $scope.arrayNomPlaylist = [];
@@ -77,16 +80,22 @@ angular.module('playlistCtrl', ['playlistService'])
                         $scope.array.push(element);
                         $scope.arrayplaylist.push(element.playlist);
                     });
+
                     angular.forEach($scope.array, function (element) {
                         $scope.arrayNomPlaylist.push((element.namePlaylist));
                     });
                 });
                 //$window.alert($scope.arrayplaylist);
-
+                vm.setWidth = {
+                    width : $scope.array.playlist.length*1000 + 'px'
+                }
             });
 
             //$route.reload();
         };
+
+        vm.getListPlaylist();
+
         vm.goToPlaylist = function () {
             vm.getListPlaylist();
             $location.path('/playlist');
@@ -100,8 +109,8 @@ angular.module('playlistCtrl', ['playlistService'])
 
         vm.deletePlaylist = function (namePlaylist) {
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
-                Playlist.delete(vm.userId, namePlaylist).success(function () {
+                vm.userId = response.id;
+                Playlist.delete(vm.userId, namePlaylist).then(function () {
                     Notification.success("La playlist "+namePlaylist+" est supprimée !");
                     vm.getListPlaylist();
                 });
@@ -109,8 +118,8 @@ angular.module('playlistCtrl', ['playlistService'])
         };
         vm.deletePlaylistBis = function (namePlaylist) {
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
-                Playlist.delete(vm.userId, namePlaylist).success(function () {
+                vm.userId = response.id;
+                Playlist.delete(vm.userId, namePlaylist).then(function () {
                     vm.getListPlaylist();
                     $location.path('/playlist');
                 });
@@ -133,8 +142,8 @@ angular.module('playlistCtrl', ['playlistService'])
                 return;
             }
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
-                Playlist.addVideo(vm.userId, playlist, url,title,source,image).success(function () {
+                vm.userId = response.id;
+                Playlist.addVideo(vm.userId, playlist, url,title,source,image).then(function () {
                     vm.getListPlaylist();
                     vm.error='La video est ajoutée dans la nouvelle playlist : '+playlist;
                     Notification.success(vm.error);
@@ -147,8 +156,8 @@ angular.module('playlistCtrl', ['playlistService'])
         vm.deleteVideo = function (playlist, video) {
 
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
-                Playlist.deleteVideo(vm.userId, playlist.namePlaylist, video).success(function () {
+                vm.userId = response.id;
+                Playlist.deleteVideo(vm.userId, playlist.namePlaylist, video).then(function () {
                     Notification.success("La video est bien supprimée !");
                     vm.getListPlaylist();
                 });
@@ -158,7 +167,7 @@ angular.module('playlistCtrl', ['playlistService'])
        vm.deleteVideoBis =  function (playlist, video) {
 
             Auth.getUser().then(function (response) {
-                vm.userId = response.data.id;
+                vm.userId = response.id;
                 Playlist.deleteVideo(vm.userId, playlist.namePlaylist, video).then(async function () {
                     $scope.selectedPlaylist = [];
                     await vm.getListPlaylist();
@@ -181,7 +190,7 @@ angular.module('playlistCtrl', ['playlistService'])
         vm.createAndAdd = function (playlist, url,title,source,image) {
             //vm.message = '';
             /*Auth.getUser().then(function(response){
-                vm.userId = response.data.id;
+                vm.userId = response.id;
                 Playlist.create(vm.userId, playlist)
                     .success(function(response){
                         vm.message = response.data.message;

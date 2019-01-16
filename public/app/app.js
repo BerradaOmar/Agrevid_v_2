@@ -1,4 +1,4 @@
-angular.module('MyApp', ['cp.ngConfirm','appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'userService', 'videoCtrl', 'videoService', 'playlistCtrl', 'playlistService', 'ui.bootstrap', 'blockUI', 'ui-notification'])
+angular.module('MyApp', ['ngMaterial', 'ngMessages', 'cp.ngConfirm', 'appRoutes', 'mainCtrl', 'authService', 'userCtrl', 'userService', 'videoCtrl', 'videoService', 'playlistCtrl', 'playlistService', 'ui.bootstrap', 'blockUI', 'ui-notification'])
 
     .config(function ($httpProvider) {
         $httpProvider.interceptors.push('AuthInterceptor');
@@ -9,15 +9,14 @@ angular.module('MyApp', ['cp.ngConfirm','appRoutes', 'mainCtrl', 'authService', 
         blockUIConfig.message = 'Chargement en cours';
 
 
-        blockUIConfig.requestFilter = function(config) {
+        blockUIConfig.requestFilter = function (config) {
             // If the request starts with '/api/quote' ...
-            if(config.url.match(/^\/pilote\/isTokenValid($|\/).*/)) {
+            if (config.url.match(/^\/pilote\/isTokenValid($|\/).*/)) {
                 return false; // ... don't block it.
             }
-            if(config.url.match(/^\/pilote\/watchVideo($|\/).*/)) {
-                    return false; // ... don't block it.
+            if (config.url.match(/^\/pilote\/watchVideo($|\/).*/)) {
+                return false; // ... don't block it.
             }
-
 
 
         };
@@ -46,4 +45,7 @@ angular.module('MyApp', ['cp.ngConfirm','appRoutes', 'mainCtrl', 'authService', 
                 }
             });
         };
-    });
+    })
+    .config(['$qProvider', function ($qProvider) {
+        $qProvider.errorOnUnhandledRejections(false);
+    }]);
