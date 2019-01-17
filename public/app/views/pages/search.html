@@ -9,8 +9,8 @@
     <!--</div>-->
 
 
-    <div class="row2">
-        <div class="col-md-8">
+    <div layout="row" layout-xs="column">
+        <div flex="66">
             <div class="">
                 <div class="panel-body">
                     <div>
@@ -97,7 +97,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div flex>
             <div class="">
                 <div class="" style="width: 420px">
 
@@ -113,35 +113,43 @@
                         </div>
                     </nav>
 
-                    <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreYoutube()">
-                            <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos track by $index" style="width:400px;" >
-                                <img src="{{x.snippet.thumbnails.medium.url}}"
-                                     ng-click="video.streamYoutubeVideo(x)"
+                    <div ng-if="video.youtubeList" style="overflow-y: auto;height: 500px;"
+                         when-scrolled="video.loadMoreYoutube()">
+                        <div class="thumbnail clearfix" ng-repeat="x in video.youtubeVideos track by $index"
+                             style="width:400px;">
+                            <img src="{{x.snippet.thumbnails.medium.url}}"
+                                 ng-click="video.streamYoutubeVideo(x)"
+                                 alt="ALT NAME"
+                                 class="pull-left span2 clearfix"
+                                 style='width:168px;height:94px;   margin-right:10px'>
+                            <div class="caption" class="pull-left">
+
+                                <h5>
+                                    <a href="#" ng-click="video.streamYoutubeVideo(x)">{{x.snippet.title}}</a>
+                                </h5>
+                                <small>{{x.snippet.channelTitle}}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  block-ui="myBlockUI">
+                    <div ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px"
+                         when-scrolled="video.loadMoreVimeo()">
+                            <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos track by $index"
+                                 style="width:400px;">
+                                <img src="{{y.pictures.sizes[3].link}}" ng-click="video.streamVimeoVideo(y)"
                                      alt="ALT NAME"
                                      class="pull-left span2 clearfix"
                                      style='width:168px;height:94px;   margin-right:10px'>
                                 <div class="caption" class="pull-left">
 
                                     <h5>
-                                        <a href="#" ng-click="video.streamYoutubeVideo(x)">{{x.snippet.title}}</a>
+                                        <a href="#" ng-click="video.streamVimeoVideo(y)">{{y.name}}</a>
                                     </h5>
-                                    <small>{{x.snippet.channelTitle}}</small>
+                                    <small>{{y.user.name}}</small>
                                 </div>
-                            </div>
-                    </div>
-
-                    <div ng-if="!video.youtubeList" style="overflow-y: auto;height: 500px;" when-scrolled="video.loadMoreVimeo()">
-                        <div class="thumbnail clearfix" ng-repeat="y in video.vimeoVideos track by $index" style="width:400px;">
-                            <img src="{{y.pictures.sizes[3].link}}" ng-click="video.streamVimeoVideo(y)" alt="ALT NAME"
-                                 class="pull-left span2 clearfix" style='width:168px;height:94px;   margin-right:10px'>
-                            <div class="caption" class="pull-left">
-
-                                <h5>
-                                    <a href="#" ng-click="video.streamVimeoVideo(y)">{{y.name}}</a>
-                                </h5>
-                                <small>{{y.user.name}}</small>
-                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

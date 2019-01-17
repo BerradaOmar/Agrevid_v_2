@@ -17,6 +17,9 @@ angular.module('MyApp', ['ngMaterial', 'ngMessages', 'cp.ngConfirm', 'appRoutes'
             if (config.url.match(/^\/pilote\/watchVideo($|\/).*/)) {
                 return false; // ... don't block it.
             }
+            if (config.url.match(/^\/pilote\/searchVimeoVideos($|\/).*/)) {
+                return false; // ... don't block it.
+            }
 
 
         };

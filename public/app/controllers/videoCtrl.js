@@ -26,11 +26,17 @@ angular.module('videoCtrl', ['videoService'])
         }
 
         vm.loadMoreVimeo = function(){
+            let myBlockUI = blockUI.instances.get('myBlockUI');
+
+            // Start blocking the element.
+            myBlockUI.start();
             Video.searchVimeoVideo(vm.search.title,vimeoPagination).then(function(res){
                 angular.forEach(res.data.results,function (elem) {
                     vm.vimeoVideos.push(elem);
                 })
                 vimeoPagination++;
+                myBlockUI.stop();
+
             });
         }
 
@@ -50,10 +56,15 @@ angular.module('videoCtrl', ['videoService'])
 
         //méthode déclanchée lors de la recherche de video
         vm.doSearch = function () {
+            let myBlockUI = blockUI.instances.get('myBlockUI');
+
+            // Start blocking the element.
+            myBlockUI.start();
+
 
             Video.searchVimeoVideo(vm.search.title,1).then(function(res){
                 vm.vimeoVideos = res.data.results;
-                console.log(vm.vimeoVideos);
+                myBlockUI.stop();
 
             });
 
@@ -63,7 +74,6 @@ angular.module('videoCtrl', ['videoService'])
 
                 vm.youtubeVideos = res.data.results;
                 nextPageToken = res.data.nextPageToken;
-                console.log(vm.youtubeVideos);
 
                 let regExLettres = new RegExp('^[a-zA-Z0-9-()/:?.= ]*$');
 
