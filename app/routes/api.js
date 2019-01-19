@@ -84,6 +84,15 @@ function createToken(user) {
     return token;
 }
 
+
+/**
+ * le nouveau token d'utilisateur qui sera inclus dans un lien de changemennt de mot de passe .
+ * @async
+ * @function createTokenforUpdatePass
+ * @param {user} user - information d'utilisateur .
+ * @param {string} codeVerification - le code de verification envoyé sur le tel d'utilisatuer pour les comptes sécurisé .
+ * @return {string} token - .
+ */
 function createTokenforUpdatePass(user, codeVerification) {
     let token = jsonwebtoken.sign({
         id: user._id,
@@ -133,7 +142,15 @@ api.post('/checkEmail', function (req, res) {
 
 
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
-//send url to updating pass
+
+
+/**
+ *envoyé le lien de changement de mot de passe a l'utilisateur .
+ *@async
+ *@function userSendModifyPassToken
+ *@param{string}  username
+ *@return {string} message -message concernant le succès de l'operation.
+ */
 api.post('/userSendModifyPassToken', function (req, res) {
 
     //check mail
@@ -291,6 +308,14 @@ api.post('/login', function (req, res) {
     });
 });
 
+/**
+ * enregistrement de la date de déconnexion de l'utilisateur connécté .
+ *@async
+ *@function logoutDate
+ *@param{string} id - id utilisateur.
+ *@return {string} message -message concernant le succès de l'operation .
+ *
+ */
 api.post('/logoutDate', function (req, res) {
 
     let myquery = {idUser: req.body.id, log_In: this.dateLogin};
@@ -347,7 +372,13 @@ api.use(function (req, res, next) {
 
 
 //Destination B here !
-
+/**
+ *changement de mot de passe via l'utilisation de lien envoiyé a l'utilisateur
+ *@async
+ *@function updateUserPassToken
+ *@param {string} token - le token qui est inclu dans le lien de changement de passe.
+ *@return {string} message - message concerant le succès de l'operation.
+ */
 api.post('/updateUserPassToken', function (req, res) {
     // decoder le token et recuperer le user
     let token = req.headers['x-access-token'];
@@ -386,7 +417,7 @@ api.post('/updateUserPassToken', function (req, res) {
 
                         }
                         else {
-                            console.log('ne depasse code v');
+
                             res.json({
                                 message: " verification code not valid !",
                                 success: false
@@ -426,6 +457,14 @@ api.post('/updateUserPassToken', function (req, res) {
 
 });
 
+
+/**
+ *  récuperer la list<> des mots clé cherché par l'utilisateur qui est enligne.
+ *@async
+ *@function userhistorys
+ *@param {string} id - le id d'utilisateur qui ent enligne.
+ *@return {json.<object>}  listHistory - .
+ */
 api.get('/userhistorys', function (req, res) {
     UserHistory.find({idUser: req.decoded.id}, function (err, userHis) {
         if (userHis) {
@@ -439,7 +478,14 @@ api.get('/userhistorys', function (req, res) {
         }
     });
 });
-
+/**
+ * chercher la list<> des mots clé cherché par un utilisateur .
+ *@async
+ *@function userhistorys
+ *@param{string} username - email de l'utilisateur.
+ *@return{json.<object>} listHistory.
+ *
+ */
 api.post('/userhistorysParam', function (req, res) {
 
     User.findOne({
@@ -479,6 +525,7 @@ api.get('/users', function (req, res) {
     });
 });
 
+
 api.post('/user', function (req, res) {
     User.find({username: req.body.username}, function (err, user) {
         if (user) {
@@ -494,6 +541,13 @@ api.post('/user', function (req, res) {
     });
 });
 
+/**
+ *récuperer la list<> des logs de l'utilisateur .
+ *@async
+ *@function userLoggs
+ *@param {string} id - le id d'utilisateur.
+ *@return {json.<object>  listlogs .
+ */
 api.get('/userLoggs', function (req, res) {
     UserLog.find({idUser: req.decoded.id}, function (err, userLoggs) {
         if (userLoggs) {
@@ -530,6 +584,13 @@ api.post('/searchUserLoggs', function (req, res) {
 });
 
 //ATTENTION : FAILLE => il faut privilégier cette méthode à l'administrateur seul
+/**
+ *supprimer un utilisateur.
+ *@async
+ *@function deleteUser
+ *@param {string} email - l'email d'utilisateur .
+ *@return {string}  message -mesage concerant le succés de l'operatiion.
+ */
 api.post('/deleteUser', function (req, res) {
     User.deleteOne({username: req.body.username}, function (err) {
         if (err)
@@ -539,6 +600,13 @@ api.post('/deleteUser', function (req, res) {
     });
 });
 
+/**
+ *modifier les information d'un utilisateur (nom,email).
+ *@async
+ *@function updateUser
+ *@param {string} id - l'id d'utilisateur .
+ *@return {string}  message -mesage concerant le succés de l'operatiion.
+ */
 api.post('/updateUser', function (req, res, next) {
     let myquery = {_id: req.decoded.id};
     let newvalues;
@@ -617,7 +685,13 @@ api.post('/updateUser', function (req, res, next) {
 });
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-
+/**
+*activer ou désactiver la sécurité d'un compte .
+*@async
+*@function updateSecTel
+*@param {string} id - l'id d'utilisateur .
+*@return {string}  message -mesage concerant le succés de l'operatiion.
+*/
 api.post('/updateSecTel', function (req, res) {
 
 
@@ -676,6 +750,13 @@ api.post('/updateSecTel', function (req, res) {
     // }
 
 })
+/**
+ *option de changement de mot de passe .
+ *@async
+ *@function updateUserPass
+ *@param {string} id - l'id d'utilisateur .
+ *@return {string}  message -mesage concerant le succés de l'operatiion.
+ */
 api.post('/updateUserPass', function (req, res) {
     User.findOne({
         _id: req.decoded.id
