@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
-    "@types/node": "^10.12.2"
+    "@types/node": "^10.12.2",
+    "jsdoc": "^3.5.5"
   }
 }

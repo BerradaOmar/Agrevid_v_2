@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apiVideo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apiVideo.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file api qui gère tout ce qui est en relation avec le streaming et recherche de videos.
+ * @author berrada omar, echarifi idrissi zouhir, ximing wang
+ */
+
+const express = require('express');
+const https = require('https');
+const fs = require('fs');
+let api = express();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const httpDelayedResponse = require("http-delayed-response");
+
+api.use(bodyParser.urlencoded({extended: true}));
+api.use(bodyParser.json());
+api.use(morgan('dev'));
+
+// certificat SSL
+let options = {
+    key: fs.readFileSync('./../../SSL/server.key'),
+    cert: fs.readFileSync('./../../SSL/server.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+};
+
+
+let serverHttps = https.createServer(options, api);
+/***************************************/
+const User = require('../models/user');
+const UserLog = require('../models/userLog');
+const UserHistory = require('../models/userHistory');
+let config = require('../../config');
+let validator = require('email-validator');
+const ytSearch = require('yt-search');
+const Youtube = require('youtube-stream-url');
+const YouTube2 = require('simple-youtube-api');
+const youtube = new YouTube2('AIzaSyBXPHBDbxvRVBWtc_9AkDHiRtAk0q2ms_o');
+const ytdl = require('ytdl-core');
+const vidl = require('vimeo-downloader');
+/*Vimeo variables*/
+const Vimeo = require('vimeo').Vimeo;
+const client = new Vimeo(config.CLIENT_ID, config.CLIENT_SECRET, config.ACCESS_TOKEN);
+
+
+let secretKey = config.secretKey;
+
+
+//for creating tokens
+let jsonwebtoken = require('jsonwebtoken');
+let userData = '';
+
+/**
+ * Stream les videos de youtube vers l'utilisateur
+ *
+ * @async
+ * @function watchYoutubeVideo
+ * @param {string} url - l'url de la video youtube.
+ * @return {flux} flux video.
+ */
+api.get('/watchYoutubeVideo/:url', function (req, res) {
+    let url = req.params.url;
+    stream = ytdl('https://www.youtube.com/watch?v=' + url);
+
+    res.on('pipe',function (source) {
+        console.log('fired');
+    })
+
+    stream.pipe(res);
+})
+
+
+
+/**
+ * Stream les videos de youtube vers l'utilisateur
+ *
+ * @async
+ * @function watchVimeoVideo
+ * @param {string} url - l'url de la video vimeo.
+ * @return {flux} flux video.
+ */
+api.get('/watchVimeoVideo/:url', function (req, res) {
+    let url = req.params.url;
+    if (url) {
+        url = 'https://vimeo.com/' + url;
+        /*Stream the video to the res*/
+
+        let stream = vidl(url, {quality: '360p'});
+
+        stream.pipe(res);
+
+        stream.on('error', function (err) {
+            console.error(err);
+            console.info("Steam emit the error")
+        });
+
+        stream.on('data', function (chunk) {
+        });
+
+        stream.on('end', function () {
+            console.log('Finished');
+        });
+    }
+})
+
+
+/**
+ * Middleware qui arrête toute requête durant + que 15s pour retourner une réponse
+ * @param req
+ * @param res
+ * @param next
+ */
+const extendTimeoutMiddleware = (req, res, next) => {
+    const space = ' ';
+    let isFinished = false;
+    let isDataSent = false;
+    let nbRequest = 0;
+
+    /*  // Only extend the timeout for API requests
+      if (!req.url.includes('/api')) {
+          next();
+          return;
+      }
+  */
+    res.once('finish', () => {
+        isFinished = true;
+    });
+
+    res.once('end', () => {
+        isFinished = true;
+    });
+
+    res.once('close', () => {
+        isFinished = true;
+    });
+
+    res.on('data', (data) => {
+        // Look for something other than our blank space to indicate that real
+        // data is now being sent back to the client.
+        if (data !== space) {
+            isDataSent = true;
+        }
+    });
+
+    const waitAndSend = () => {
+        console.log('hanaaaaaaaaa');
+        if(nbRequest === 2){
+            res.end();
+        }
+        setTimeout(() => {
+            // If the response hasn't finished and hasn't sent any data back....
+            if (!isFinished &amp;&amp; !isDataSent) {
+                // Need to write the status code/headers if they haven't been sent yet.
+                if (!res.headersSent) {
+                    res.writeHead(202);
+                }
+
+                res.write(space);
+                nbRequest++;
+
+                // Wait another 15 seconds
+                waitAndSend();
+            }
+        }, 15000);
+    };
+
+    waitAndSend();
+    next();
+};
+
+
+/**
+ * Recherche les videos youtube et vimeo
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.&lt;object>} listes d'objects contenant des informations sur les videos recherchées.
+ */
+api.get('/search/:search', function (req, res) {
+    let token = req.headers['x-access-token'];
+    let search = req.params.search;
+    //check if token exist
+    if (token) {
+        jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+            if (err) {
+                res.status(403).send({success: false, message: "Failed to authenticate user"});
+            } else {
+                //all the info of user is down here after authentication
+                req.decoded = decoded;
+                userData = decoded;
+                //need instance of history in order to add it while the search has been done
+                let userH = new UserHistory({
+                    idUser: req.decoded.id,
+                    username: req.decoded.username,
+                    request_Video: search,
+                    request_date: new Date()
+                });
+                userH.save();
+                res.json({
+                   message : "Search history successfully added"
+                });
+            }
+        });
+    } else {
+        res.status(403).send({success: false, message: "No token provided"});
+    }
+})
+
+api.use(extendTimeoutMiddleware);
+
+/**
+ * Recherche les videos youtube
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.&lt;object>} listes d'objects contenant des informations sur les videos recherchées.
+ */api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
+
+    let search = req.params.search;
+    let nextPageToken = req.params.nextPageToken;
+    // console.log(search);
+    //res.writeHead(200, {'Content-Type': 'video/mp4'});
+    youtube.searchVideos(search, 25,{},nextPageToken)
+        .then(function (results) {
+            if(results.pageInfo.totalResults !== 0){
+                res.json({
+                    results : results.items,
+                    nextPageToken : results.nextPageToken,
+                    videoPerPage : results.pageInfo.resultsPerPage
+                });
+                console.log(results);
+
+            } else {
+                res.json({
+                    message : 'not found'
+                });
+            }
+
+        })
+        .catch(console.log);
+
+})
+
+
+
+
+
+
+/**
+ * Recherche les videos vimeo
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.&lt;object>} listes d'objects contenant des informations sur les videos recherchées.
+ */api.get('/searchVimeoVideos/:search/:page', function (req, res) {
+    /*let delayed = new httpDelayedResponse(req, res);
+    delayed.json();
+    // delayed.wait();
+
+    // verySlowFunction can now run indefinitely
+    let promise = verySlowFunction(delayed.start(),req.params.search,req.params.page);
+    // console.log(results);
+    // delayed.end(promise);
+
+    if(promise === ' '){
+        res.write('wait');
+    }else{
+        res.json({results : promise});
+    }*/
+
+    let search = req.params.search;
+  let page = req.params.page;
+
+    console.log("page : "+page);
+    search = search.replace(/ /g, "+");
+    // console.log(search);
+
+    client.request(/*options*/{
+        // This is the path for the videos contained within the staff picks
+        // channels
+        path: '/videos?query=' + search,
+        // This adds the parameters to request page two, and 10 items per
+        // page
+
+        query: {
+            page: page
+        }
+
+    }, /*callback*/function (error, body, status_code, headers) {
+        if (error) {
+            console.log('error');
+            console.log(error);
+        } else if (body &amp;&amp; body.data[0] &amp;&amp; body.data[0].link) {
+            res.json({results: body.data});
+        }
+
+    })
+
+})
+
+
+
+
+/********************************************/
+serverHttps.listen(3002, function (err) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Listening on port 3002");
+    }
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#extendTimeoutMiddleware">extendTimeoutMiddleware</a></li><li><a href="global.html#search">search</a></li><li><a href="global.html#watchVimeoVideo">watchVimeoVideo</a></li><li><a href="global.html#watchYoutubeVideo">watchYoutubeVideo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jan 18 2019 11:43:08 GMT+0100 (Paris, Madrid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

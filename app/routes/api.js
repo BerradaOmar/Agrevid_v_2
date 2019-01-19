@@ -1,3 +1,7 @@
+/**
+ * @file api qui gère tout ce qui est en relation avec l'utilisateur(authentification, historique,logs).
+ * @author berrada omar, echarifi idrissi zouhir, sergio galan-delea
+ */
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
@@ -37,7 +41,6 @@ const vidl = require('vimeo-downloader');
 /*Vimeo variables*/
 const Vimeo = require('vimeo').Vimeo;
 const client = new Vimeo(config.CLIENT_ID, config.CLIENT_SECRET, config.ACCESS_TOKEN);
-
 // Download the helper library from https://www.twilio.com/docs/node/install
 // Your Account Sid and Auth Token from twilio.com/console
 const accountSid = 'AC765be5d355ca81506f732b0a311b1363';
@@ -45,19 +48,12 @@ const authToken = 'f2bb4924ba7d824f4c646b15c3df9072';
 const sms = require('twilio')(accountSid, authToken);
 //randomString generator
 const randomstring = require("randomstring");
-
-
 let dateLogin;
-
 let secretKey = config.secretKey;
-
-
 //for creating tokens
 let jsonwebtoken = require('jsonwebtoken');
-
 //user
 let userConnected;
-
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -67,7 +63,11 @@ let transporter = nodemailer.createTransport({
 });
 
 
-
+/**
+ * Crée un token d'authentification pour l'utilisateur
+ * @param user
+ * @returns {string} token
+ */
 function createToken(user) {
     let token = jsonwebtoken.sign({
         id: user._id,
@@ -110,20 +110,31 @@ function createTokenforUpdatePass(user, codeVerification) {
     return token;
 }
 
-
-api.use(function (req,res,next) {
+/**
+ * Middleware qui authorise l'accès à l'application TODOLIST
+ */
+api.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8095');
 
-   /* //Request methods you wish to allow
-    res.setHeader("Access-Control-Allow-Methods", "POST");
+    /* //Request methods you wish to allow
+     res.setHeader("Access-Control-Allow-Methods", "POST");
 
-    //Request headers you wish to allow
-    res.setHeader("Access-Control-Allow-Headers", "X-requested-with,content-type");*/
+     //Request headers you wish to allow
+     res.setHeader("Access-Control-Allow-Headers", "X-requested-with,content-type");*/
 
     next();
 })
 
+
+/**
+ * Vérifie le format de l'email rentré
+ *
+ * @async
+ * @function checkEmail
+ * @param {string} username - email de l'utilisateur.
+ * @return {json.<object>} checked - booléen informant sur la validité du format de l'email.
+ */
 api.post('/checkEmail', function (req, res) {
     if (validator.validate(req.body.username)) {
         res.json({
@@ -136,9 +147,6 @@ api.post('/checkEmail', function (req, res) {
         });
     }
 });
-
-
-
 
 
 /*<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -243,6 +251,19 @@ api.post('/userSendModifyPassToken', function (req, res) {
     }
 });
 
+/**
+ * méthode pour l'inscription des clients
+ *
+ * @async
+ * @function signup
+ * @param {string} name - nom de l'utlisateur.
+ * @param {string} username - l'adresse mail de l'utlisateur.
+ * @param {string} password - mot de passe.
+ * @param {string} tel - numéro de téléphone.
+ * @param {string} admin - renseigne si l'utlisateur est admin ou pas (non admin par défaut).
+ * @param {boolean} useMyNumForSec - booléen disant si l'utlisateur veut renforcer sa sécurité avec son numéro de téléphone.
+ * @return {json.<object>} message indiquant le succés de l'opération.
+ */
 api.post('/signup', function (req, res) {
     let user = new User({
         name: req.body.name,
@@ -272,7 +293,15 @@ api.post('/signup', function (req, res) {
 
 });
 
-
+/**
+ * méthode pour l'authentification des clients
+ *
+ * @async
+ * @function login
+ * @param {string} username - l'adresse mail de l'utlisateur.
+ * @param {string} password - mot de passe.
+ * @return {json.<object>} message indiquant le succés de l'opération.
+ */
 api.post('/login', function (req, res) {
     User.findOne({
         username: req.body.username
@@ -309,12 +338,12 @@ api.post('/login', function (req, res) {
 });
 
 /**
- * enregistrement de la date de déconnexion de l'utilisateur connécté .
- *@async
- *@function logoutDate
- *@param{string} id - id utilisateur.
- *@return {string} message -message concernant le succès de l'operation .
+ * méthode qui sauvegarde la date de déconnexion des clients
  *
+ * @async
+ * @function logoutDate
+ * @param {string} id - l'adresse mail de l'utlisateur.
+ * @return {json.<object>} message indiquant le succés de l'opération.
  */
 api.post('/logoutDate', function (req, res) {
 
@@ -332,7 +361,14 @@ api.post('/logoutDate', function (req, res) {
 
 });
 
-
+/**
+ * méthode qui vérifie l'authenticité du token de l'utilisateur
+ *
+ * @async
+ * @function isTokenValid
+ * @param {string} token - token de l'utlisateur.
+ * @return {json.<object>} message indiquant le succés de l'opération.
+ */
 api.get('/isTokenValid/:token', function (req, res) {
     let token = req.params.token;
     //check if token exist
@@ -347,6 +383,10 @@ api.get('/isTokenValid/:token', function (req, res) {
 
 })
 
+
+/**
+ * Middelware qui vérifie l'authenticité du token avant d'accéder aux opérations à risque
+ */
 /*UP : destination A*/
 /*DOWN : destination B*/
 //position of this middlware in the code is important !
@@ -507,10 +547,25 @@ api.post('/userhistorysParam', function (req, res) {
     })
 });
 
+/**
+ * renvoie les informations concérnant l'utilisateur actuel
+ *
+ * @async
+ * @function me
+ * @param req.
+ * @return {json.<object>} information concérnant l'utlisateur.
+ */
 api.get('/me', function (req, res) {
     res.json(req.decoded);
 });
 
+/**
+ * renvoie tout les utilisateurs inscrits dans le site web
+ *
+ * @async
+ * @function users
+ * @return {json.<object>} information concérnant tous les utilisateurs.
+ */
 api.get('/users', function (req, res) {
     User.find({}, function (err, users) {
         if (users) {
@@ -525,7 +580,13 @@ api.get('/users', function (req, res) {
     });
 });
 
-
+/**
+ * renvoie les informations concérnant l'utilisateur recherché
+ * @async
+ * @function user
+ * @param {username.<string>} adresse mail de l'utilisateur recherché.
+ * @return {json.<object>} information concérnant l'utlisateur.
+ */
 api.post('/user', function (req, res) {
     User.find({username: req.body.username}, function (err, user) {
         if (user) {
@@ -738,10 +799,10 @@ api.post('/updateSecTel', function (req, res) {
             if (secS === 'true') {
                 res.json({message: 'votre compte est bien sécurisé !', success: true});
             } else if (secS === 'false') {
-                res.json({message:'votre compte est non sécurisé !', success: false});
+                res.json({message: 'votre compte est non sécurisé !', success: false});
             }
-            else if(!secS){
-                res.json({message:'votre compte est non sécurisé !', success: false});
+            else if (!secS) {
+                res.json({message: 'votre compte est non sécurisé !', success: false});
             }
 
         }

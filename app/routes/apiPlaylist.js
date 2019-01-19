@@ -1,3 +1,7 @@
+/**
+ * @file api qui gère tout ce qui est en relation avec les playlists de vidéos.
+ * @author berrada omar, echarifi idrissi zouhir, sergio galan-delea
+ */
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
@@ -27,6 +31,19 @@ let config = require('../../config');
 let jsonwebtoken = require('jsonwebtoken');
 let secretKey = config.secretKey;
 
+/**
+ * permet de vérifier le token de l'utilisateur
+ *
+ * @function api.use
+ * @param {object} req - requete
+ * @param {string} req.body.token - contient le token
+ * @param {string} req.param - contient le token
+ * @param {string} req.headers - contient le token
+ * @param {object} next - fonction à appeler si le token est valide
+ * @return {object} res - réponse retournée
+ * @return {boolean} res.success - renvoie si la fonction a fonctionné ou pas
+ * @return {string} res.message - message de traitement
+ */
 /*UP : destination A*/
 /*DOWN : destination B*/
 //position of this middlware in the code is important !
@@ -54,7 +71,14 @@ api.use(function (req, res, next) {
 //Playlist function
 //-----------------------------------------------------------
 
-
+/**
+ * permet d'obtenir la liste des plaxlists de l'utilisateur
+ *
+ * @async
+ * @function getPlaylist
+ * @param {string} req.body.idUser - identificateur de l'utilisateur
+ * @return {object} res - liste des playlists de l'utilisateur
+ */
 api.post('/getPlaylist', function (req, res) {
     Playlist.find({idUser: req.body.idUser}, function (err, userPlaylist) {
         if (err) {
@@ -66,6 +90,17 @@ api.post('/getPlaylist', function (req, res) {
     });
 });
 
+
+/**
+ * permet d'ajouter une playlist vide pour l'utilisateur qui en fait la demande
+ *
+ * @async
+ * @function createPlaylist
+ * @param {string} req.body.idUser - identificateur de l'utilisateur
+ * @param {string} req.body.namePlaylist - nom de la playlist à créer
+ * @return {object} res - message de traitement à rendre et nom de la playlist concernée.
+ *
+ */
 //Adds a new playlist
 api.post('/createPlaylist',function (req, res) {
     const playlistData = req.body;
@@ -86,6 +121,16 @@ api.post('/createPlaylist',function (req, res) {
     });
 });
 
+
+/**
+ * permet de supprimer une des playlists de l'utilisateur
+ *
+ * @async
+ * @function deletePlaylist
+ * @param {string} req.body.idUser - identificateur de l'utilisateur
+ * @param {string} req.body.namePlaylist - nom de la playlist à supprimer
+ * @return {object} res - message de traitement.
+ */
 //Delete a playlist
 api.post('/deletePlaylist',function (req, res) {
     Playlist.deleteOne({idUser: req.body.idUser, namePlaylist: req.body.namePlaylist}, function (err) {
@@ -96,7 +141,19 @@ api.post('/deletePlaylist',function (req, res) {
     });
 });
 
-
+/**
+ * permet de ajouter une video à une playlist nommée de l'utilisateur
+ *
+ * @async
+ * @function addVideoPlaylist
+ * @param {string} req.body.idUser - identificateur de l'utilisateur
+ * @param {string} req.body.namePlaylist - nom de la playlist dans laquelle est ajouté la vidéo
+ * @param {string} req.body.url - url de la vidéo à ajouter à la playlist
+ * @param {string} req.body.title - titre de la vidéo à ajouter à la playlist
+ * @param {string} req.body.source - source de la vidéo à ajouter à la playlist
+ * @param {string} req.body.image - image de la vidéo à ajouter à la playlist
+ * @return {object} res - message de traitement.
+ */
 //Adds a new video to the playlist
 api.post('/addVideoPlaylist',function (req, res) {
     Playlist.findOneAndUpdate({idUser: req.body.idUser ,namePlaylist: req.body.namePlaylist},
@@ -117,6 +174,17 @@ api.post('/addVideoPlaylist',function (req, res) {
         });
 });
 
+
+/**
+ * permet de supprimer une vidéo nommée d'une playlist de l'utilisateur
+ *
+ * @async
+ * @function deleteVideoPlaylist
+ * @param {string} req.body.idUser - identificateur de l'utilisateur
+ * @param {string} req.body.namePlaylist - nom de la playlist dans laquelle la vidéo sera supprimé
+ * @param {string} req.body.video - vidéo à supprimer de la playlist
+ * @return {object} res - message de traitement.
+ */
 //Delete a video from playlist
 api.post('/deleteVideoPlaylist',function (req, res) {
     Playlist.findOneAndUpdate({ idUser: req.body.idUser, namePlaylist: req.body.namePlaylist},

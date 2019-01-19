@@ -37,6 +37,17 @@ app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
 
 
+app.get('/doc/apivideo',function (req,res) {
+    res.sendFile(__dirname + '/public/doc/apivideo/index.html');
+});
+
+app.get('/doc/apiauth',function (req,res) {
+    res.sendFile(__dirname + '/public/doc/apiauth/index.html');
+});
+
+app.get('/doc/apiplaylist',function (req,res) {
+    res.sendFile(__dirname + '/public/doc/apiplaylist/index.html');
+});
 
 let pilote = require('./app/pilote')(app,express);
 

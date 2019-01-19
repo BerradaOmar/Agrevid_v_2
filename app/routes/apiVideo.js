@@ -1,3 +1,8 @@
+/**
+ * @file api qui gère tout ce qui est en relation avec le streaming et recherche de videos.
+ * @author berrada omar, echarifi idrissi zouhir, sergio galan-delea
+ */
+
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
@@ -44,7 +49,14 @@ let secretKey = config.secretKey;
 let jsonwebtoken = require('jsonwebtoken');
 let userData = '';
 
-/*méthode qui stream la video de youtube*/
+/**
+ * Stream les videos de youtube vers l'utilisateur
+ *
+ * @async
+ * @function watchYoutubeVideo
+ * @param {string} url - l'url de la video youtube.
+ * @return {flux} flux video.
+ */
 api.get('/watchYoutubeVideo/:url', function (req, res) {
     let url = req.params.url;
     stream = ytdl('https://www.youtube.com/watch?v=' + url);
@@ -58,7 +70,14 @@ api.get('/watchYoutubeVideo/:url', function (req, res) {
 
 
 
-/*méthode qui stream la video de vimeo*/
+/**
+ * Stream les videos de youtube vers l'utilisateur
+ *
+ * @async
+ * @function watchVimeoVideo
+ * @param {string} url - l'url de la video vimeo.
+ * @return {flux} flux video.
+ */
 api.get('/watchVimeoVideo/:url', function (req, res) {
     let url = req.params.url;
     if (url) {
@@ -83,6 +102,13 @@ api.get('/watchVimeoVideo/:url', function (req, res) {
     }
 })
 
+
+/**
+ * Middleware qui arrête toute requête durant + que 15s pour retourner une réponse
+ * @param req
+ * @param res
+ * @param next
+ */
 const extendTimeoutMiddleware = (req, res, next) => {
     const space = ' ';
     let isFinished = false;
@@ -142,7 +168,14 @@ const extendTimeoutMiddleware = (req, res, next) => {
 };
 
 
-
+/**
+ * Recherche les videos youtube et vimeo
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.<object>} listes d'objects contenant des informations sur les videos recherchées.
+ */
 api.get('/search/:search', function (req, res) {
     let token = req.headers['x-access-token'];
     let search = req.params.search;
@@ -175,8 +208,14 @@ api.get('/search/:search', function (req, res) {
 
 api.use(extendTimeoutMiddleware);
 
-/*méthode qui cherche les videos de youtube*/
-api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
+/**
+ * Recherche les videos youtube
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.<object>} listes d'objects contenant des informations sur les videos recherchées.
+ */api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
 
     let search = req.params.search;
     let nextPageToken = req.params.nextPageToken;
@@ -208,8 +247,14 @@ api.get('/searchYoutubeVideos/:search/:nextPageToken', function (req, res) {
 
 
 
-/*méthode qui cherche les videos de vimeo*/
-api.get('/searchVimeoVideos/:search/:page', function (req, res) {
+/**
+ * Recherche les videos vimeo
+ *
+ * @async
+ * @function search
+ * @param {string} search - les mots clés pour effectuer la recherche.
+ * @return {json.<object>} listes d'objects contenant des informations sur les videos recherchées.
+ */api.get('/searchVimeoVideos/:search/:page', function (req, res) {
     /*let delayed = new httpDelayedResponse(req, res);
     delayed.json();
     // delayed.wait();

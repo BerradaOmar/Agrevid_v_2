@@ -39,6 +39,9 @@ angular.module('appRoutes',['ngRoute'])
         .when('/search',{
             templateUrl: 'app/views/pages/search.html'
         })
+        .when('/docs',{
+            templateUrl: 'app/views/pages/doc.html'
+        })
 
         .when('/updatePass/:token/:code',{
             templateUrl : 'app/views/pages/updatePass.html',
